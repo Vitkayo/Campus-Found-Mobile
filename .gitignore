@@ -1,0 +1,50 @@
+# Gradle / build
+.gradle/
+build/
+**/build/
+
+# Local SDK path (machine-specific)
+local.properties
+
+# Android Studio
+.idea/
+*.iml
+.navigation/
+captures/
+
+# Native / NDK
+.externalNativeBuild/
+.cxx/
+obj/
+
+# Built APKs & release folder (share via GitHub Releases, not Git)
+*.apk
+*.ap_
+*.aab
+*.dex
+*.idsig
+release/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Firebase config (copy from google-services.json.example)
+app/google-services.json
+
+# Internal setup docs (local only — not for submission)
+FIREBASE_SETUP.md
+CAMPUS_FOUND_IMAGE_GUIDE.md
+
+# Dev / agent test scripts (local automation only)
+scripts/
+
+# UI design drafts (Stitch/HTML mockups — not the real app)
+stitch_campus_lost_found/
+
+# Cursor IDE
+.cursor/
+
+# Optional: keep secrets out of repo
+*.keystore
+*.jks
