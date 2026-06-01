@@ -1,0 +1,135 @@
+<resources>
+    <string name="app_name">Campus Found</string>
+    <string name="tagline">Lost &amp; found at Royal University of Phnom Penh (RUPP).</string>
+    <string name="location_hint_rupp">Pick a common RUPP spot or type your own</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="email">Email Address</string>
+    <string name="email_or_phone">Email or Phone Number</string>
+    <string name="username">Username</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="phone_label">Phone: %1$s</string>
+    <string name="email_label">%1$s</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="edit_profile_password_hint">Leave blank to keep your current password</string>
+    <string name="edit_profile_name_required">Username is required</string>
+    <string name="edit_profile_password_mismatch">Passwords do not match</string>
+    <string name="edit_profile_password_short">Password must be at least 6 characters</string>
+    <string name="edit_profile_invalid_phone">Enter a valid phone number (8+ digits)</string>
+    <string name="password">Password</string>
+    <string name="login_identifier_required">Email or phone number is required</string>
+    <string name="invalid_login_identifier">Enter a valid email or phone number</string>
+    <string name="invalid_login_credentials">Invalid email/phone or password</string>
+    <string name="register_validation_error">Please enter username, valid email, phone (8+ digits), and password (6+ characters)</string>
+    <string name="registration_success">Registration successful. You can login now.</string>
+    <string name="remember_me">Remember me</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="register_here">Register here</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="search_hint">Search lost items…</string>
+    <string name="home">Home</string>
+    <string name="report">Report</string>
+    <string name="profile">Profile</string>
+    <string name="post_item">Report Item</string>
+    <string name="submit_post">Submit Post</string>
+    <string name="item_status">Item Status</string>
+    <string name="selected_status">Selected: %1$s</string>
+    <string name="lost">Lost</string>
+    <string name="found">Found</string>
+    <string name="claimed">Claimed</string>
+    <string name="photos">Photos</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="upload_hint">JPEG, PNG up to 10MB</string>
+    <string name="title">Title</string>
+    <string name="category">Category</string>
+    <string name="description">Description</string>
+    <string name="location">Last Seen Location</string>
+    <string name="use_my_location">Use my location</string>
+    <string name="contact_info">Contact</string>
+    <string name="contact_hint">IG, Facebook, Telegram, or phone number</string>
+    <string name="contact_not_provided">No contact information provided.</string>
+    <string name="location_not_set">Location not specified.</string>
+    <string name="default_location_rupp">Royal University of Phnom Penh (RUPP)</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="switch_to_dark_mode">Switch to dark mode</string>
+    <string name="switch_to_light_mode">Switch to light mode</string>
+    <string name="default_contact_short">Default contact</string>
+    <string name="location_permission_needed">Location permission is needed to detect your position.</string>
+    <string name="image_required">Please add a photo from your device.</string>
+    <string name="contact_required">Contact information is required.</string>
+    <string name="full_name">Full Name</string>
+    <string name="student_id">Student ID</string>
+    <string name="default_contact">Default contact (for new posts)</string>
+    <string name="profile_updated">Profile updated</string>
+    <string name="open_in_maps">Open in Maps</string>
+    <string name="tap_contact_hint">Tap to call, message, or open a link</string>
+    <string name="contact_missing_hint">No contact listed. Ask %1$s on campus or check back later.</string>
+    <string name="maps_not_available">No maps app found on this device.</string>
+    <string name="pull_to_refresh">Pull down to refresh items</string>
+    <string name="photo_skipped_too_large">Posted successfully. Photo was too large for the server and was omitted.</string>
+    <string name="close">Close</string>
+    <string name="create_account">Create Account</string>
+    <string name="date">Date</string>
+    <string name="contact_owner">Contact Owner</string>
+    <string name="mark_claimed">Mark as Claimed</string>
+    <string name="my_posted_items">My Posted Items</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="logout">Logout</string>
+    <string name="total_posts">Total Posts</string>
+    <string name="loading">Loading…</string>
+    <string name="empty_items">No items found</string>
+    <string name="error_loading">Unable to load items</string>
+    <string name="retry">Retry</string>
+    <string name="reported_by">Reported By</string>
+    <string name="location_found">Location Found</string>
+    <string name="open_maps">Open in Maps</string>
+    <string name="verified_student">Verified Student</string>
+    <string name="delete">Delete</string>
+    <string name="success_post">Item posted successfully</string>
+    <string name="success_claimed">Item marked as claimed</string>
+    <string name="success_deleted">Item deleted</string>
+    <string name="view_all">View All</string>
+    <string name="student_id_label">Student ID: %1$s</string>
+    <string-array name="categories">
+        <item>Electronics</item>
+        <item>Student ID</item>
+        <item>Wallet</item>
+        <item>Keys</item>
+        <item>Clothing &amp; Accessories</item>
+        <item>Books &amp; Stationery</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="filters">
+        <item>All</item>
+        <item>Lost</item>
+        <item>Found</item>
+        <item>Electronics</item>
+        <item>Wallet</item>
+        <item>Student ID</item>
+        <item>Keys</item>
+        <item>Books &amp; Stationery</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="rupp_locations">
+        <item>Central Library, RUPP</item>
+        <item>Samdech Techo Hun Sen Library, RUPP</item>
+        <item>Main Auditorium (Aula), RUPP</item>
+        <item>Faculty of Engineering Building, RUPP</item>
+        <item>Computer Lab, Faculty of Engineering, RUPP</item>
+        <item>Faculty of Science Building, RUPP</item>
+        <item>Institute of Foreign Languages (IFL), RUPP</item>
+        <item>Language Center, IFL, RUPP</item>
+        <item>IFL Building Lobby, RUPP</item>
+        <item>RUPP Cafeteria</item>
+        <item>FOE Canteen, RUPP</item>
+        <item>Admin Building, RUPP</item>
+        <item>Sport Complex, RUPP</item>
+        <item>Stadium, RUPP</item>
+        <item>Main Gate Parking, RUPP</item>
+        <item>Block A Lecture Hall, RUPP</item>
+        <item>Block B Laboratory, RUPP</item>
+        <item>Student Dormitory Zone, RUPP</item>
+        <item>Botanical Garden, RUPP</item>
+    </string-array>
+</resources>
