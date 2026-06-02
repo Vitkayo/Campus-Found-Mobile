@@ -35,6 +35,7 @@ app/google-services.json
 # Internal setup docs (local only — not for submission)
 FIREBASE_SETUP.md
 CAMPUS_FOUND_IMAGE_GUIDE.md
+PROJECT_TECHNOLOGY_SUMMARY.txt
 
 # Dev / agent test scripts (local automation only)
 scripts/
