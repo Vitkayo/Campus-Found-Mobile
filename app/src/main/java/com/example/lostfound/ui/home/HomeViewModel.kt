@@ -39,6 +39,8 @@ class HomeViewModel(
     private var scrollState: Parcelable? =
         savedStateHandle.get<Parcelable>("recycler_scroll_state")
 
+    private var pendingPostedItem: Item? = null
+
     fun saveScrollState(state: Parcelable?) {
         scrollState = state
         savedStateHandle["recycler_scroll_state"] = state
@@ -83,13 +85,38 @@ class HomeViewModel(
         fetchItems()
     }
 
+    /** After posting a new item: show full list from API with newest first. */
+    fun refreshAfterNewPost(createdItem: Item? = null) {
+        savedStateHandle["selected_filter"] = "All"
+        savedStateHandle["search_query"] = ""
+        clearScrollState()
+        pendingPostedItem = createdItem
+        if (createdItem != null) {
+            val merged = ItemSort.newestFirst(
+                listOf(createdItem) + _items.value.orEmpty().filter { it.id != createdItem.id }
+            )
+            _items.value = merged
+            applyFilters()
+        }
+        _isRefreshing.value = true
+        _error.value = null
+        fetchItems()
+    }
+
     private fun fetchItems() {
         if (_items.value.isNullOrEmpty() && _isLoading.value != true) {
             _isLoading.postValue(true)
         }
         itemService.getAllItems(object : ItemService.ItemCallback<List<Item>> {
             override fun onSuccess(data: List<Item>) {
-                _items.postValue(data)
+                val posted = pendingPostedItem
+                pendingPostedItem = null
+                val merged = if (posted != null && data.none { it.id == posted.id }) {
+                    ItemSort.newestFirst(listOf(posted) + data)
+                } else {
+                    data
+                }
+                _items.postValue(merged)
                 applyFilters()
                 _isLoading.postValue(false)
                 _isRefreshing.postValue(false)

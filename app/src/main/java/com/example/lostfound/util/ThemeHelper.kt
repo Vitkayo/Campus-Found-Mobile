@@ -19,9 +19,10 @@ object ThemeHelper {
 
     fun setDarkMode(activity: Activity, enabled: Boolean) {
         SessionManager(activity).setDarkMode(enabled)
-        AppCompatDelegate.setDefaultNightMode(
+        val mode =
             if (enabled) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        )
+        AppCompatDelegate.setDefaultNightMode(mode)
+        (activity as? androidx.appcompat.app.AppCompatActivity)?.delegate?.localNightMode = mode
         activity.recreate()
     }
 }

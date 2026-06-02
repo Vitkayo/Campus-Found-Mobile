@@ -274,6 +274,11 @@ class PostItemFragment : Fragment() {
         )
     }
 
+    override fun onResume() {
+        super.onResume()
+        ThemeToggleBinding.refreshForFragment(this)
+    }
+
     override fun onPause() {
         saveDraftFromForm()
         super.onPause()
@@ -299,7 +304,7 @@ class PostItemFragment : Fragment() {
                 Snackbar.make(binding.root, R.string.success_post, Snackbar.LENGTH_SHORT).show()
                 viewModel.clearDraft()
                 clearFormUi()
-                homeViewModel.clearScrollState()
+                homeViewModel.refreshAfterNewPost(viewModel.takeCreatedItem())
                 findNavController().navigate(R.id.homeFragment)
                 viewModel.clearSubmitSuccess()
             }

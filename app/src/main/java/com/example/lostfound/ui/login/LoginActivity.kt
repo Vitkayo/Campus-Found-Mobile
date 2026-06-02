@@ -42,6 +42,13 @@ class LoginActivity : AppCompatActivity() {
         binding.emailInput.requestFocus()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (::binding.isInitialized) {
+            ThemeToggleBinding.refreshIcon(binding.darkModeButton, this)
+        }
+    }
+
     private fun attemptLogin() {
         val identifier = binding.emailInput.text?.toString()?.trim().orEmpty()
         val password = binding.passwordInput.text?.toString().orEmpty()

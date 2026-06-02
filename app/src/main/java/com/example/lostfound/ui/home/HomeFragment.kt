@@ -7,12 +7,13 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lostfound.R
@@ -27,7 +28,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
     private lateinit var adapter: ItemAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private val searchHandler = Handler(Looper.getMainLooper())
@@ -51,6 +52,7 @@ class HomeFragment : Fragment() {
         setupRecyclerView()
         setupSwipeRefresh()
         setupFilters()
+        setupFilterScroll()
         setupSearch()
         observeViewModel()
         ThemeToggleBinding.bind(binding.darkModeButton, requireActivity() as AppCompatActivity)
@@ -65,6 +67,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        ThemeToggleBinding.refreshForFragment(this)
         viewModel.getScrollState()?.let { layoutManager.onRestoreInstanceState(it) }
     }
 
@@ -93,30 +96,58 @@ class HomeFragment : Fragment() {
 
     private fun setupFilters() {
         val filters = resources.getStringArray(R.array.filters)
+        val selected = viewModel.selectedFilter.value ?: "All"
+        binding.filterChipGroup.setOnCheckedStateChangeListener(null)
         binding.filterChipGroup.removeAllViews()
 
         filters.forEach { filter ->
             val chip = Chip(requireContext()).apply {
+                id = View.generateViewId()
                 text = filter
                 isCheckable = true
-                isChecked = filter == viewModel.selectedFilter.value
-                setChipBackgroundColorResource(
-                    if (isChecked) R.color.primary else R.color.surface_container_high
-                )
-                setTextColor(
-                    resources.getColor(
-                        if (isChecked) R.color.on_primary else R.color.on_surface_variant,
-                        null
-                    )
-                )
-                setOnCheckedChangeListener { _, checked ->
-                    if (checked) {
-                        viewModel.setSelectedFilter(filter)
-                        updateChipStyles(filter)
-                    }
-                }
+                isChecked = filter == selected
             }
             binding.filterChipGroup.addView(chip)
+        }
+
+        binding.filterChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            if (checkedIds.isEmpty()) {
+                syncChipSelection(viewModel.selectedFilter.value ?: "All")
+                return@setOnCheckedStateChangeListener
+            }
+            val chip = group.findViewById<Chip>(checkedIds.first()) ?: return@setOnCheckedStateChangeListener
+            val filter = chip.text.toString()
+            if (filter != viewModel.selectedFilter.value) {
+                viewModel.setSelectedFilter(filter)
+                updateChipStyles(filter)
+            }
+        }
+
+        updateChipStyles(selected)
+    }
+
+    private fun syncChipSelection(filter: String) {
+        for (i in 0 until binding.filterChipGroup.childCount) {
+            val chip = binding.filterChipGroup.getChildAt(i) as Chip
+            if (chip.text.toString() == filter) {
+                if (binding.filterChipGroup.checkedChipId != chip.id) {
+                    binding.filterChipGroup.check(chip.id)
+                }
+                updateChipStyles(filter)
+                return
+            }
+        }
+    }
+
+    private fun setupFilterScroll() {
+        binding.filterScrollView.setOnTouchListener { view, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN ->
+                    view.parent?.requestDisallowInterceptTouchEvent(true)
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL ->
+                    view.parent?.requestDisallowInterceptTouchEvent(false)
+            }
+            false
         }
     }
 
@@ -138,6 +169,13 @@ class HomeFragment : Fragment() {
 
     private fun setupSearch() {
         binding.searchInput.setText(viewModel.searchQuery.value)
+        viewModel.searchQuery.observe(viewLifecycleOwner) { query ->
+            val current = binding.searchInput.text?.toString().orEmpty()
+            if (current != query) {
+                binding.searchInput.setText(query)
+                binding.searchInput.setSelection(query.length)
+            }
+        }
         binding.searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
@@ -153,7 +191,9 @@ class HomeFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.filteredItems.observe(viewLifecycleOwner) { items ->
             adapter.submitList(items) {
-                if (viewModel.getScrollState() == null && items.isNotEmpty()) {
+                if (items.isNotEmpty() &&
+                    (viewModel.getScrollState() == null || binding.swipeRefresh.isRefreshing)
+                ) {
                     binding.itemsRecyclerView.scrollToPosition(0)
                 }
             }
@@ -181,6 +221,10 @@ class HomeFragment : Fragment() {
             binding.errorStateLayout.visibility =
                 if (!error.isNullOrBlank()) View.VISIBLE else View.GONE
             binding.errorMessageText.text = error
+        }
+
+        viewModel.selectedFilter.observe(viewLifecycleOwner) { filter ->
+            syncChipSelection(filter ?: "All")
         }
     }
 

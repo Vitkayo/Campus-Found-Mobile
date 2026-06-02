@@ -35,6 +35,8 @@ class PostItemViewModel(
     private val _submitSuccess = MutableLiveData(false)
     val submitSuccess: LiveData<Boolean> = _submitSuccess
 
+    private var lastCreatedItem: Item? = null
+
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
@@ -135,6 +137,7 @@ class PostItemViewModel(
 
         itemService.createItem(item, object : ItemService.ItemCallback<Item> {
             override fun onSuccess(data: Item) {
+                lastCreatedItem = data
                 clearDraft()
                 _isSubmitting.postValue(false)
                 _submitSuccess.postValue(true)
@@ -168,8 +171,11 @@ class PostItemViewModel(
         })
     }
 
+    fun takeCreatedItem(): Item? = lastCreatedItem.also { lastCreatedItem = null }
+
     fun clearSubmitSuccess() {
         _submitSuccess.value = false
+        lastCreatedItem = null
     }
 
     fun clearDraft() {

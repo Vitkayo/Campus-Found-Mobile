@@ -54,6 +54,7 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        ThemeToggleBinding.refreshForFragment(this)
         viewModel.refreshUserInfo()
     }
 

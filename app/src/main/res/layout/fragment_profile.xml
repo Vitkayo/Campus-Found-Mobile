@@ -29,13 +29,13 @@
 
             <ImageButton
                 android:id="@+id/darkModeButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/theme_toggle_size"
+                android:layout_height="@dimen/theme_toggle_size"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/switch_to_dark_mode"
-                android:padding="8dp"
-                android:src="@drawable/ic_dark_mode"
-                app:tint="@color/primary" />
+                android:padding="@dimen/theme_toggle_padding"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_theme_dark" />
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

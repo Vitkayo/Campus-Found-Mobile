@@ -17,7 +17,7 @@
         <item name="colorError">@color/error</item>
         <item name="android:statusBarColor">@color/surface</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/surface_container</item>
+        <item name="android:navigationBarColor">@color/surface</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:enforceNavigationBarContrast" tools:targetApi="29">false</item>
@@ -49,8 +49,19 @@
 
     <style name="Widget.CampusFound.BottomNav" parent="Widget.Material3.BottomNavigationView">
         <item name="itemIconSize">24dp</item>
-        <item name="itemPaddingTop">2dp</item>
-        <item name="itemPaddingBottom">2dp</item>
+        <item name="itemPaddingTop">8dp</item>
+        <item name="itemPaddingBottom">12dp</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.CampusFound.BottomNav.ActiveIndicator</item>
     </style>
+
+    <style name="Widget.CampusFound.BottomNav.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/primary_container</item>
+        <item name="android:width">72dp</item>
+        <item name="android:height">32dp</item>
+        <item name="marginHorizontal">8dp</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.CampusFound.BottomNavIndicator</item>
+    </style>
+
+    <style name="ShapeAppearance.CampusFound.BottomNavIndicator" parent="ShapeAppearance.Material3.Corner.Full" />
 
 </resources>
