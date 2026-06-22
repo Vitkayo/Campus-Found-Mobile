@@ -133,17 +133,21 @@ class SessionManager @Inject constructor(@ApplicationContext context: Context) {
         return true
     }
 
+    fun hasRegisteredUser(): Boolean {
+        val savedEmail = prefs.getString(KEY_REGISTERED_EMAIL, "") ?: ""
+        val savedPassword = prefs.getString(KEY_REGISTERED_PASSWORD, "") ?: ""
+        return savedEmail.isNotEmpty() && savedPassword.isNotEmpty()
+    }
+
     fun validateLogin(identifier: String, password: String): Boolean {
+        if (!hasRegisteredUser()) return false
+
         val savedEmail = prefs.getString(KEY_REGISTERED_EMAIL, "") ?: ""
         val savedPhone = prefs.getString(KEY_REGISTERED_PHONE, "") ?: ""
         val savedPassword = prefs.getString(KEY_REGISTERED_PASSWORD, "") ?: ""
 
-        if (savedEmail.isNotEmpty() && savedPassword.isNotEmpty()) {
-            return CredentialUtils.identifierMatchesLogin(identifier, savedEmail, savedPhone) &&
-                password == savedPassword
-        }
-
-        return CredentialUtils.isValidLoginIdentifier(identifier) && password.length >= 6
+        return CredentialUtils.identifierMatchesLogin(identifier, savedEmail, savedPhone) &&
+            password == savedPassword
     }
 
     fun getRegisteredName(): String =
@@ -160,6 +164,15 @@ class SessionManager @Inject constructor(@ApplicationContext context: Context) {
 
     fun getRegisteredProfileImage(): String =
         prefs.getString(KEY_PROFILE_IMAGE, "") ?: ""
+
+    fun ownsItem(reporterName: String?): Boolean {
+        if (reporterName.isNullOrBlank()) return false
+        val reporter = reporterName.trim().lowercase()
+        val userName = getUserName().trim().lowercase()
+        if (reporter == userName) return true
+        val emailPrefix = getEmail().substringBefore("@").trim().lowercase()
+        return emailPrefix.isNotBlank() && reporter == emailPrefix
+    }
 
     companion object {
         private const val PREF_NAME = "campus_found_session"

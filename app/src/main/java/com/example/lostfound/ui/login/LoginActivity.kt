@@ -16,16 +16,18 @@ import com.example.lostfound.util.ThemeToggleBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var sessionManager: SessionManager
+
+    @Inject
+    lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sessionManager = SessionManager(this)
 
         if (sessionManager.isLoggedIn()) {
             navigateToMain()
@@ -70,7 +72,14 @@ class LoginActivity : AppCompatActivity() {
             return
         }
         if (password.length < 6) {
-            binding.passwordLayout.error = "Password must be at least 6 characters"
+            binding.passwordLayout.error = getString(R.string.password_min_length)
+            return
+        }
+
+        if (!sessionManager.hasRegisteredUser()) {
+            binding.errorText.text = getString(R.string.login_register_first)
+            binding.errorText.setTextColor(getColor(R.color.error))
+            binding.errorText.visibility = View.VISIBLE
             return
         }
 

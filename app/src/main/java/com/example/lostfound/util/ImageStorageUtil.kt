@@ -12,19 +12,22 @@ import java.util.UUID
 
 object ImageStorageUtil {
 
-    /** MockAPI rejects large JSON payloads; keep base64 JPEG small. */
-    private const val MAX_IMAGE_BYTES = 180_000
+    /** MockAPI rejects large JSON bodies; keep JPEG small before base64 (~70KB → ~93KB encoded). */
+    private const val MAX_IMAGE_BYTES = 70_000
+    private const val MAX_EDGE_PX = 960
 
     fun persistImage(context: Context, uri: Uri): String? {
+        return compressToLocalFile(context, uri)
+    }
+
+    fun persistBitmap(context: Context, bitmap: Bitmap): String? {
         return try {
-            val dir = File(context.filesDir, "post_images").apply { mkdirs() }
-            val outFile = File(dir, "${UUID.randomUUID()}.jpg")
-            context.contentResolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(outFile).use { output -> input.copyTo(output) }
-            } ?: return null
-            outFile.absolutePath
+            val bytes = compressBitmap(bitmap) ?: return null
+            writeBytesToPostImageFile(context, bytes)
         } catch (_: Exception) {
             null
+        } finally {
+            if (!bitmap.isRecycled) bitmap.recycle()
         }
     }
 
@@ -44,10 +47,10 @@ object ImageStorageUtil {
         }
 
         return try {
-            val bytes = readCompressedBytes(context, uri) ?: return localPathOrUri
+            val bytes = readCompressedBytes(context, uri) ?: return ""
             "data:image/jpeg;base64," + Base64.encodeToString(bytes, Base64.NO_WRAP)
         } catch (_: Exception) {
-            localPathOrUri
+            ""
         }
     }
 
@@ -73,6 +76,59 @@ object ImageStorageUtil {
         return File(localPathOrUri).exists()
     }
 
+    private fun compressToLocalFile(context: Context, uri: Uri): String? {
+        return try {
+            val bytes = readCompressedBytes(context, uri) ?: return null
+            writeBytesToPostImageFile(context, bytes)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun writeBytesToPostImageFile(context: Context, bytes: ByteArray): String? {
+        return try {
+            val dir = File(context.filesDir, "post_images").apply { mkdirs() }
+            val outFile = File(dir, "${UUID.randomUUID()}.jpg")
+            FileOutputStream(outFile).use { it.write(bytes) }
+            outFile.absolutePath
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun compressBitmap(bitmap: Bitmap): ByteArray? {
+        var quality = 80
+        var scale = 1f
+        var result = ByteArray(0)
+        val base = scaleDownToMaxEdge(bitmap, MAX_EDGE_PX)
+
+        for (attempt in 0 until 16) {
+            val width = (base.width * scale).toInt().coerceAtLeast(1)
+            val height = (base.height * scale).toInt().coerceAtLeast(1)
+            val scaled = if (scale < 1f) {
+                Bitmap.createScaledBitmap(base, width, height, true)
+            } else {
+                base
+            }
+
+            val stream = ByteArrayOutputStream()
+            scaled.compress(Bitmap.CompressFormat.JPEG, quality, stream)
+            result = stream.toByteArray()
+
+            if (scaled != base) scaled.recycle()
+
+            if (result.size <= MAX_IMAGE_BYTES) break
+            if (quality > 30) {
+                quality -= 10
+            } else {
+                scale *= 0.7f
+            }
+        }
+
+        if (base != bitmap && !base.isRecycled) base.recycle()
+        return result.takeIf { it.size <= MAX_IMAGE_BYTES }
+    }
+
     private fun readCompressedBytes(context: Context, uri: Uri): ByteArray? {
         val original = context.contentResolver.openInputStream(uri)?.use { stream ->
             BitmapFactory.decodeStream(stream)
@@ -80,34 +136,19 @@ object ImageStorageUtil {
             BitmapFactory.decodeFile(it.absolutePath)
         } ?: return null
 
-        var quality = 82
-        var scale = 1f
-        var result = ByteArray(0)
-
-        for (attempt in 0 until 12) {
-            val width = (original.width * scale).toInt().coerceAtLeast(1)
-            val height = (original.height * scale).toInt().coerceAtLeast(1)
-            val scaled = if (scale < 1f) {
-                Bitmap.createScaledBitmap(original, width, height, true)
-            } else {
-                original
-            }
-
-            val stream = ByteArrayOutputStream()
-            scaled.compress(Bitmap.CompressFormat.JPEG, quality, stream)
-            result = stream.toByteArray()
-
-            if (scaled != original) scaled.recycle()
-
-            if (result.size <= MAX_IMAGE_BYTES) break
-            if (quality > 35) {
-                quality -= 10
-            } else {
-                scale *= 0.75f
-            }
+        return try {
+            compressBitmap(original)
+        } finally {
+            if (!original.isRecycled) original.recycle()
         }
+    }
 
-        if (!original.isRecycled) original.recycle()
-        return result
+    private fun scaleDownToMaxEdge(bitmap: Bitmap, maxEdge: Int): Bitmap {
+        val longest = maxOf(bitmap.width, bitmap.height)
+        if (longest <= maxEdge) return bitmap
+        val scale = maxEdge.toFloat() / longest
+        val width = (bitmap.width * scale).toInt().coerceAtLeast(1)
+        val height = (bitmap.height * scale).toInt().coerceAtLeast(1)
+        return Bitmap.createScaledBitmap(bitmap, width, height, true)
     }
 }

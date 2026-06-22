@@ -65,15 +65,47 @@ class ItemRepository @Inject constructor(
     }
 
     suspend fun createItem(item: Item): Item = withContext(Dispatchers.IO) {
-        apiService.createItem(item)
+        val created = apiService.createItem(item)
+        upsertCachedItem(created)
+        created
+    }
+
+    suspend fun updateItem(id: String, item: Item): Item = withContext(Dispatchers.IO) {
+        val updated = apiService.updateItem(id, item)
+        upsertCachedItem(updated)
+        updated
     }
 
     suspend fun deleteItem(id: String): Item = withContext(Dispatchers.IO) {
-        apiService.deleteItem(id)
+        val deleted = apiService.deleteItem(id)
+        removeCachedItem(id)
+        deleted
     }
 
     suspend fun getRecentlyViewed(): List<Item> = withContext(Dispatchers.IO) {
         recentDao.getAll().map { it.toItem() }
+    }
+
+    private fun upsertCachedItem(item: Item) {
+        val id = item.id ?: return
+        val records = cachedDao.getAll().toMutableList()
+        val record = item.toCachedRecord()
+        val index = records.indexOfFirst { it.id == id }
+        if (index >= 0) {
+            records[index] = record
+        } else {
+            records.add(0, record)
+        }
+        cachedDao.clearAll()
+        cachedDao.insertAll(records)
+    }
+
+    private fun removeCachedItem(id: String) {
+        val records = cachedDao.getAll().filterNot { it.id == id }
+        cachedDao.clearAll()
+        if (records.isNotEmpty()) {
+            cachedDao.insertAll(records)
+        }
     }
 
     private fun Item.toCachedRecord() = CachedItemRecord(

@@ -1,12 +1,14 @@
-# Gradle / build
+# ── Gradle / Android build ──────────────────────────────────────────
 .gradle/
 build/
 **/build/
+.kotlin/
+*.hprof
 
-# Local SDK path (machine-specific)
+# Machine-specific SDK path (copy from local.properties.example)
 local.properties
 
-# Android Studio (keep run config + gradle link for teammates)
+# ── Android Studio / IDE ────────────────────────────────────────────
 .idea/
 !.idea/gradle.xml
 !.idea/misc.xml
@@ -14,13 +16,11 @@ local.properties
 *.iml
 .navigation/
 captures/
-
-# Native / NDK
 .externalNativeBuild/
 .cxx/
 obj/
 
-# Built APKs & release folder (share via GitHub Releases, not Git)
+# ── Built artifacts (use GitHub Releases for APKs, not the repo) ───
 *.apk
 *.ap_
 *.aab
@@ -28,35 +28,40 @@ obj/
 *.idsig
 release/
 
-# OS junk
+# ── Secrets & signing (never commit) ───────────────────────────────
+app/google-services.json
+google-services.json
+*.keystore
+*.jks
+.env
+.env.*
+
+# ── OS junk ─────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Firebase config (copy from google-services.json.example)
-app/google-services.json
+# ── Editor / agent (local only) ─────────────────────────────────────
+.cursor/
+.vscode/
 
-# Internal setup docs (local only — not for submission)
+# ── Python cache (if any helper scripts locally) ────────────────────
+__pycache__/
+*.py[cod]
+
+# ── Optional local-only notes (not for GitHub) ──────────────────────
 FIREBASE_SETUP.md
 CAMPUS_FOUND_IMAGE_GUIDE.md
 PROJECT_TECHNOLOGY_SUMMARY.txt
 
-# Dev / agent test scripts (local automation only)
+# Local automation scripts (README documents them; keep machine-specific)
 scripts/
 script/
 
-# UI design drafts (Stitch/HTML mockups — not the real app)
+# UI design drafts (not the Android app)
 stitch_campus_lost_found/
 
-# Cursor IDE
-.cursor/
-
-# VS Code
-.vscode/
-
-# Python cache
-__pycache__/
-*.py[cod]
-
-# Optional: keep secrets out of repo
-*.keystore
-*.jks
+# Dev / setup extras (keep locally — not needed for teacher submission)
+docs/
+postman/
+firebase/

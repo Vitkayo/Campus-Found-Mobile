@@ -19,6 +19,8 @@
     <string name="login_identifier_required">Email or phone number is required</string>
     <string name="invalid_login_identifier">Enter a valid email or phone number</string>
     <string name="invalid_login_credentials">Invalid email/phone or password</string>
+    <string name="login_register_first">Create an account first using Register.</string>
+    <string name="password_min_length">Password must be at least 6 characters</string>
     <string name="register_validation_error">Please enter username, valid email, phone (8+ digits), and password (6+ characters)</string>
     <string name="registration_success">Registration successful. You can login now.</string>
     <string name="remember_me">Remember me</string>
@@ -35,7 +37,10 @@
     <string name="lost">Lost</string>
     <string name="found">Found</string>
     <string name="upload_image">Upload Image</string>
-    <string name="upload_hint">JPEG, PNG up to 10MB</string>
+    <string name="upload_hint">JPEG or PNG · use gallery or camera below</string>
+    <string name="choose_photo">Choose photo</string>
+    <string name="take_photo">Take photo</string>
+    <string name="camera_permission_needed">Camera permission is needed to take a photo</string>
     <string name="title">Title</string>
     <string name="category">Category</string>
     <string name="description">Description</string>
@@ -61,10 +66,16 @@
     <string name="status_lost">Lost</string>
     <string name="status_found">Found</string>
     <string name="status_claimed">Claimed</string>
+    <string name="mark_claimed">Mark as Claimed</string>
+    <string name="success_claimed">Item marked as claimed</string>
     <string name="delete">Delete</string>
     <string name="total_posts">Total Posts</string>
     <string name="empty_items">No items found</string>
     <string name="error_loading">Unable to load items</string>
+    <string name="error_photo_too_large">Photo is too large for the demo server. Use a smaller image or try again — we compress it automatically.</string>
+    <string name="error_photo_upload_failed">Could not prepare photo for upload. Try another image or submit without a photo.</string>
+    <string name="error_firebase_upload">Photo upload failed. Check Firebase Storage rules and internet, then try again.</string>
+    <string name="error_post_failed">Could not submit post. Please try again.</string>
     <string name="retry">Retry</string>
     <string name="reported_by">Reported By</string>
     <string name="location_found">Location Found</string>

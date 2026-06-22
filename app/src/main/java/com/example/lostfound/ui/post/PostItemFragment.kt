@@ -29,11 +29,14 @@ import com.example.lostfound.util.ImageLoader
 import com.example.lostfound.util.ImageStorageUtil
 import com.example.lostfound.util.LocationHelper
 import com.example.lostfound.util.ThemeToggleBinding
+import android.net.Uri
+import androidx.core.content.FileProvider
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.util.Calendar
 import java.util.Locale
-
-import dagger.hilt.android.AndroidEntryPoint
+import java.util.UUID
 
 @AndroidEntryPoint
 class PostItemFragment : Fragment() {
@@ -46,19 +49,34 @@ class PostItemFragment : Fragment() {
     private lateinit var sessionManager: SessionManager
     private var savedImagePath: String? = null
     private var isLostSelected = true
+    private var cameraPhotoUri: Uri? = null
+    private var lastShownSubmitError: String? = null
 
     private val imagePicker = registerForActivityResult(
         ActivityResultContracts.GetContent(),
     ) { uri ->
         if (uri != null) {
-            val path = ImageStorageUtil.persistImage(requireContext(), uri)
-            if (path == null) {
-                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_SHORT).show()
-                return@registerForActivityResult
-            }
-            savedImagePath = path
-            showImagePreview(path)
-            saveDraftFromForm()
+            onImageUriSelected(uri)
+        }
+    }
+
+    private val takePhotoLauncher = registerForActivityResult(
+        ActivityResultContracts.TakePicture(),
+    ) { success ->
+        val uri = cameraPhotoUri
+        if (success && uri != null) {
+            onImageUriSelected(uri)
+        }
+        cameraPhotoUri = null
+    }
+
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        if (granted) {
+            launchCameraCapture()
+        } else {
+            Snackbar.make(binding.root, R.string.camera_permission_needed, Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -204,6 +222,8 @@ class PostItemFragment : Fragment() {
 
     private fun setupListeners() {
         binding.uploadArea.setOnClickListener { imagePicker.launch("image/*") }
+        binding.choosePhotoButton.setOnClickListener { imagePicker.launch("image/*") }
+        binding.takePhotoButton.setOnClickListener { onTakePhotoClicked() }
         binding.dateInput.setOnClickListener { showDatePicker() }
         binding.useLocationButton.setOnClickListener { onUseLocationClicked() }
 
@@ -222,6 +242,52 @@ class PostItemFragment : Fragment() {
                 statusValue = status,
                 imagePathOrUri = imagePath
             )
+        }
+    }
+
+    private fun onImageUriSelected(uri: Uri) {
+        val path = ImageStorageUtil.persistImage(requireContext(), uri)
+        if (path == null) {
+            Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_SHORT).show()
+            return
+        }
+        savedImagePath = path
+        showImagePreview(path)
+        saveDraftFromForm()
+    }
+
+    private fun onTakePhotoClicked() {
+        val granted = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (granted) {
+            launchCameraCapture()
+        } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun launchCameraCapture() {
+        val uri = createCameraPhotoUri() ?: run {
+            Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_SHORT).show()
+            return
+        }
+        cameraPhotoUri = uri
+        takePhotoLauncher.launch(uri)
+    }
+
+    private fun createCameraPhotoUri(): Uri? {
+        return try {
+            val file = File(requireContext().cacheDir, "camera_${UUID.randomUUID()}.jpg")
+            FileProvider.getUriForFile(
+                requireContext(),
+                "${requireContext().packageName}.fileprovider",
+                file
+            )
+        } catch (_: Exception) {
+            null
         }
     }
 
@@ -299,8 +365,13 @@ class PostItemFragment : Fragment() {
                     if (state.error != null) {
                         binding.formErrorText.visibility = View.VISIBLE
                         binding.formErrorText.text = state.error
+                        if (state.error != lastShownSubmitError) {
+                            lastShownSubmitError = state.error
+                            Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
+                        }
                     } else {
                         binding.formErrorText.visibility = View.GONE
+                        lastShownSubmitError = null
                     }
 
                     binding.submitProgress.visibility = if (state.isSubmitting) View.VISIBLE else View.GONE

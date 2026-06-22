@@ -66,7 +66,8 @@ cd "D:\Lost and Found Mobile"
 .\gradlew.bat :app:installDebug
 ```
 
-4. **Firebase (optional):** Copy `app/google-services.json.example` → `app/google-services.json` from Firebase Console (`com.lostfound`). Without it, the app still runs; photos use a base64 fallback.
+4. **Photos (free demo — no Firebase billing):** Images are compressed and sent to MockAPI as base64 in `imageUrl`. Works on the free Spark plan; `imageUrl` looks long in the MockAPI dashboard — that is normal.
+   - **Optional (paid):** Firebase Storage needs the **Blaze** plan. If you upgrade later, see [docs/FIREBASE_MOCKAPI_SETUP.md](docs/FIREBASE_MOCKAPI_SETUP.md) — add `app/google-services.json`, enable Storage, rebuild.
 5. **Internet** — Home/Report need network for MockAPI (`https://6a1460d76c7db8aac05469d9.mockapi.io/`).
 
 ### Local automation (`scripts/`)

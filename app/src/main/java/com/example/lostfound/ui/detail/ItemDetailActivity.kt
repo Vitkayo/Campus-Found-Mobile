@@ -59,6 +59,11 @@ class ItemDetailActivity : AppCompatActivity() {
                         Snackbar.make(binding.root, state.error, Snackbar.LENGTH_SHORT).show()
                     }
 
+                    if (state.claimSuccess) {
+                        Snackbar.make(binding.root, R.string.success_claimed, Snackbar.LENGTH_SHORT).show()
+                        viewModel.clearClaimSuccess()
+                    }
+
                     val item = state.item ?: return@collect
                     binding.detailTitle.text = item.title.orEmpty()
                     binding.detailDescription.text = item.description.orEmpty()
@@ -91,11 +96,11 @@ class ItemDetailActivity : AppCompatActivity() {
                     StatusUtils.applyStatusBadge(this@ItemDetailActivity, item.status, binding.detailStatusBadge)
                     ImageLoader.load(binding.detailImage, item.imageUrl)
 
-                    val isOwner = item.reporterName?.lowercase() == sessionManager.getUserName().lowercase()
-                    val canClaim = isOwner && item.status?.lowercase() != "claimed"
+                    val isOwner = sessionManager.ownsItem(item.reporterName)
+                    val canClaim = isOwner && !item.status.equals("claimed", ignoreCase = true)
                     binding.markClaimedButton.visibility = if (canClaim) View.VISIBLE else View.GONE
                     binding.markClaimedButton.setOnClickListener {
-                        viewModel.updateItemStatus(item.id.orEmpty(), "claimed")
+                        viewModel.updateItemStatus("claimed")
                     }
                 }
             }

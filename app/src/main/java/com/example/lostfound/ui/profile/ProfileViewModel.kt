@@ -98,14 +98,9 @@ class ProfileViewModel @Inject constructor(
     fun loadMyItems() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            val currentUser = sessionManager.getUserName().lowercase()
             try {
                 val data = repository.getItems()
-                val mine = data.filter {
-                    it.reporterName?.lowercase() == currentUser ||
-                        it.reporterName?.lowercase() ==
-                        sessionManager.getEmail().substringBefore("@").lowercase()
-                }
+                val mine = data.filter { sessionManager.ownsItem(it.reporterName) }
                 _uiState.update { it.copy(
                     myItems = ItemSort.newestFirst(mine),
                     totalPosts = mine.size,
