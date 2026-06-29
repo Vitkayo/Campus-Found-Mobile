@@ -26,17 +26,6 @@ This is a student demo release. It does not include an admin dashboard or staff 
 6. Report a new lost or found item — enter location as free text (e.g. `A610, Library`).
 7. Return to Home, pull to refresh, then open Profile and logout.
 
-## Demo Accounts (MockAPI)
-
-These accounts live on the MockAPI backend and work for login and profile sync:
-
-| Email | Password |
-| --- | --- |
-| `vit@gmail.com` | `12345678` |
-| `demo@test.com` | `123456` |
-| `demo@gmail.com` | `123456` |
-
-You can also register a new account from the login screen.
 
 ## Project Info
 
@@ -49,8 +38,3 @@ You can also register a new account from the login screen.
 - Target SDK: `35`
 - MockAPI base URL: `https://6a1460d76c7db8aac05469d9.mockapi.io/`
 
-## Backend Notes
-
-- **Users** — `/user` for login, registration, profile updates, and password reset
-- **Items** — `/item` for lost and found posts
-- **Photos** — Firebase Storage when `google-services.json` is present; otherwise base64 fallback for MockAPI
