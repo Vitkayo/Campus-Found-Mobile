@@ -26,10 +26,14 @@ class LoginActivity : AppCompatActivity() {
     @Inject
     lateinit var sessionManager: SessionManager
 
+    companion object {
+        const val EXTRA_SHOW_LOGIN = "com.example.lostfound.SHOW_LOGIN"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (sessionManager.isLoggedIn()) {
+        if (sessionManager.isLoggedIn() || !intent.getBooleanExtra(EXTRA_SHOW_LOGIN, false)) {
             navigateToMain()
             return
         }
@@ -151,7 +155,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun navigateToMain() {
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+        )
         finish()
     }
 }

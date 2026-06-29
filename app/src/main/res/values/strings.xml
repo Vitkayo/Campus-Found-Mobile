@@ -42,6 +42,9 @@
     <string name="invalid_login_identifier">Enter a valid email or phone number</string>
     <string name="invalid_login_credentials">Invalid email/phone or password</string>
     <string name="login_register_first">Create an account first using Register.</string>
+    <string name="login_required_title">Login Required</string>
+    <string name="login_required_message">Please login or create an account to use this feature.</string>
+    <string name="continue_browsing">Continue Browsing</string>
     <string name="password_min_length">Password must be at least 6 characters</string>
     <string name="register_validation_error">Please enter username, valid email, phone (8+ digits), and password (6+ characters)</string>
     <string name="registration_success">Registration successful. You can login now.</string>

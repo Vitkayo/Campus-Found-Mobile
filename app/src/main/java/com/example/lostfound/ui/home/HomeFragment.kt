@@ -21,12 +21,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lostfound.R
 import com.example.lostfound.databinding.FragmentHomeBinding
 import com.example.lostfound.model.Item
+import com.example.lostfound.service.SessionManager
 import com.example.lostfound.ui.detail.ItemDetailActivity
+import com.example.lostfound.ui.login.LoginActivity
 import com.example.lostfound.util.ThemeToggleBinding
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -35,6 +39,8 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by activityViewModels()
+    @Inject
+    lateinit var sessionManager: SessionManager
     private lateinit var adapter: ItemAdapter
     private lateinit var recentAdapter: RecentItemAdapter
     private lateinit var layoutManager: LinearLayoutManager
@@ -67,7 +73,11 @@ class HomeFragment : Fragment() {
 
         binding.retryButton.setOnClickListener { viewModel.loadItems() }
         binding.addItemFab.setOnClickListener {
-            findNavController().navigate(R.id.postItemFragment)
+            if (sessionManager.isLoggedIn()) {
+                findNavController().navigate(R.id.postItemFragment)
+            } else {
+                showLoginRequiredDialog()
+            }
         }
     }
 
@@ -245,6 +255,20 @@ class HomeFragment : Fragment() {
             putExtra(ItemDetailActivity.EXTRA_ITEM_ID, item.id)
         }
         startActivity(intent)
+    }
+
+    private fun showLoginRequiredDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.login_required_title)
+            .setMessage(R.string.login_required_message)
+            .setPositiveButton(R.string.login) { _, _ ->
+                startActivity(
+                    Intent(requireContext(), LoginActivity::class.java)
+                        .putExtra(LoginActivity.EXTRA_SHOW_LOGIN, true)
+                )
+            }
+            .setNegativeButton(R.string.continue_browsing, null)
+            .show()
     }
 
     private fun updateHomeCounts(state: HomeUiState) {

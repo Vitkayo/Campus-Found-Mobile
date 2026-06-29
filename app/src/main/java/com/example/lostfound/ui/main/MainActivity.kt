@@ -10,9 +10,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.onNavDestinationSelected
+import com.example.lostfound.R
 import com.example.lostfound.databinding.ActivityMainBinding
 import com.example.lostfound.service.SessionManager
 import com.example.lostfound.ui.login.LoginActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,12 +29,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (!sessionManager.isLoggedIn()) {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-            return
-        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -56,6 +53,29 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(com.example.lostfound.R.id.nav_host_fragment) as NavHostFragment
-        binding.bottomNavigation.setupWithNavController(navHostFragment.navController)
+        val navController = navHostFragment.navController
+        binding.bottomNavigation.setupWithNavController(navController)
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            if (!sessionManager.isLoggedIn() && item.itemId != R.id.homeFragment) {
+                showLoginRequiredDialog()
+                return@setOnItemSelectedListener false
+            }
+            item.onNavDestinationSelected(navController)
+        }
+    }
+
+    private fun showLoginRequiredDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.login_required_title)
+            .setMessage(R.string.login_required_message)
+            .setPositiveButton(R.string.login) { _, _ -> openLogin() }
+            .setNegativeButton(R.string.continue_browsing, null)
+            .show()
+    }
+
+    private fun openLogin() {
+        startActivity(
+            Intent(this, LoginActivity::class.java).putExtra(LoginActivity.EXTRA_SHOW_LOGIN, true)
+        )
     }
 }
