@@ -29,20 +29,6 @@ moderation tools.
 6. Report a new lost or found item.
 7. Return to Home, pull to refresh, then open Profile and logout.
 
-## Tech Stack
-
-- Kotlin
-- Android XML layouts
-- Material Design 3 components
-- ViewBinding
-- Navigation component
-- Hilt dependency injection
-- Retrofit
-- Room
-- Glide
-- MockAPI backend
-- Optional Firebase Storage support for photos
-
 ## Project Info
 
 - Application ID: `com.lostfound`
@@ -54,33 +40,3 @@ moderation tools.
 - Target SDK: `35`
 - MockAPI base URL: `https://6a1460d76c7db8aac05469d9.mockapi.io/`
 
-## Setup
-
-1. Install Android Studio with the Android SDK.
-2. Copy `local.properties.example` to `local.properties`.
-3. Update `sdk.dir` in `local.properties` for your machine.
-4. Open the project in Android Studio and run the `app` configuration.
-
-Command line build:
-
-```powershell
-.\gradlew.bat :app:assembleDebug
-```
-
-Command line install, with an emulator or USB device connected:
-
-```powershell
-.\gradlew.bat :app:installDebug
-```
-
-## Firebase
-
-The app can run without Firebase Storage by using the built-in photo fallback.
-If Firebase Storage is enabled later, copy `app/google-services.json.example` to
-`app/google-services.json`, add the real Firebase config, and rebuild.
-
-`app/google-services.json` is intentionally ignored by Git.
-
-## Author
-
-Vitkayo - Campus Found, RUPP Lost and Found project.
