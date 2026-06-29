@@ -11,6 +11,10 @@
     <string name="section_location">Location</string>
     <string name="section_contact_date">Contact &amp; Date</string>
     <string name="report_progress_hint">Complete the form below</string>
+    <string name="item_detail_title">Item Detail</string>
+    <string name="contact_reporter">Contact Reporter</string>
+    <string name="delete_post">Delete Post</string>
+    <string name="category_label">Category</string>
     <string name="location_hint_rupp">Pick a common RUPP spot or type your own</string>
     <string name="welcome_back">Welcome back</string>
     <string name="email">Email Address</string>
