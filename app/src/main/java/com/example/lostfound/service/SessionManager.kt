@@ -20,29 +20,37 @@ class SessionManager @Inject constructor(@ApplicationContext context: Context) {
     fun isLoggedIn(): Boolean = prefs.getBoolean(KEY_LOGGED_IN, false)
 
     fun saveSession(
+        userId: String,
         email: String,
         name: String,
         phone: String,
         studentId: String,
         rememberMe: Boolean,
-        profileImage: String = ""
+        profileImage: String = "",
+        password: String = ""
     ) {
         prefs.edit()
             .putBoolean(KEY_LOGGED_IN, true)
+            .putString(KEY_USER_ID, userId)
             .putString(KEY_EMAIL, email)
             .putString(KEY_NAME, name)
             .putString(KEY_PHONE, phone)
             .putString(KEY_STUDENT_ID, studentId)
             .putBoolean(KEY_REMEMBER, rememberMe)
             .putString(KEY_PROFILE_IMAGE, profileImage)
+            .putString(KEY_REGISTERED_PASSWORD, password)
             .apply()
     }
+
+    fun getStoredPassword(): String = prefs.getString(KEY_REGISTERED_PASSWORD, "") ?: ""
 
     fun clearSession() {
         val darkMode = isDarkMode()
         prefs.edit().clear().apply()
         setDarkMode(darkMode)
     }
+
+    fun getUserId(): String = prefs.getString(KEY_USER_ID, "") ?: ""
 
     fun getEmail(): String = prefs.getString(KEY_EMAIL, "") ?: ""
 
@@ -70,7 +78,8 @@ class SessionManager @Inject constructor(@ApplicationContext context: Context) {
         phone: String,
         newPassword: String,
         confirmPassword: String,
-        profileImage: String? = null
+        profileImage: String? = null,
+        storedPassword: String? = null
     ): Boolean {
         if (name.isBlank()) return false
         if (!CredentialUtils.isValidEmail(email)) return false
@@ -82,19 +91,16 @@ class SessionManager @Inject constructor(@ApplicationContext context: Context) {
         }
 
         val normalizedPhone = CredentialUtils.normalizePhone(phone)
-        val password = if (passwordChanging) {
-            newPassword
-        } else {
-            prefs.getString(KEY_REGISTERED_PASSWORD, "") ?: ""
+        val password = when {
+            passwordChanging -> newPassword
+            !storedPassword.isNullOrBlank() -> storedPassword
+            else -> prefs.getString(KEY_REGISTERED_PASSWORD, "") ?: ""
         }
 
         val editor = prefs.edit()
             .putString(KEY_NAME, name.trim())
             .putString(KEY_EMAIL, email.trim())
             .putString(KEY_PHONE, normalizedPhone)
-            .putString(KEY_REGISTERED_NAME, name.trim())
-            .putString(KEY_REGISTERED_EMAIL, email.trim())
-            .putString(KEY_REGISTERED_PHONE, normalizedPhone)
             .putString(KEY_REGISTERED_PASSWORD, password)
 
         if (profileImage != null) {
@@ -177,6 +183,7 @@ class SessionManager @Inject constructor(@ApplicationContext context: Context) {
     companion object {
         private const val PREF_NAME = "campus_found_session"
         private const val KEY_LOGGED_IN = "logged_in"
+        private const val KEY_USER_ID = "user_id"
         private const val KEY_EMAIL = "email"
         private const val KEY_NAME = "name"
         private const val KEY_PHONE = "phone"
