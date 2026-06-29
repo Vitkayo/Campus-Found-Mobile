@@ -6,6 +6,11 @@
     <string name="home_found_count">%1$d Found</string>
     <string name="home_total_count">%1$d Total</string>
     <string name="home_results_count">%1$d results</string>
+    <string name="section_item_photo">Item Photo</string>
+    <string name="section_item_details">Item Details</string>
+    <string name="section_location">Location</string>
+    <string name="section_contact_date">Contact &amp; Date</string>
+    <string name="report_progress_hint">Complete the form below</string>
     <string name="location_hint_rupp">Pick a common RUPP spot or type your own</string>
     <string name="welcome_back">Welcome back</string>
     <string name="email">Email Address</string>

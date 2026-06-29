@@ -28,4 +28,8 @@
     <color name="home_chip_found_bg">#DCFCE7</color>
     <color name="home_chip_total_bg">#DBEAFE</color>
     <color name="home_chip_total_text">#1D4ED8</color>
+    <color name="accent_photo">#F59E0B</color>
+    <color name="accent_details">#A855F7</color>
+    <color name="accent_location">#22C55E</color>
+    <color name="accent_contact">#F97316</color>
 </resources>
