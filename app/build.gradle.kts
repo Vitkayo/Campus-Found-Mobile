@@ -87,6 +87,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
+    androidTestImplementation(libs.room.testing)
 }
 
 if (firebaseConfigured) {

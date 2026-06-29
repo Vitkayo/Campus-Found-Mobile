@@ -48,7 +48,7 @@ class CampusFoundFlowTest {
         loginRule.launchActivity(null)
         onView(withText("Welcome back")).check(matches(isDisplayed()))
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
-        onView(withId(R.id.registerButton)).check(matches(isDisplayed()))
+        onView(withId(R.id.registerTab)).check(matches(isDisplayed()))
         onView(withId(R.id.darkModeButton)).check(matches(isDisplayed()))
     }
 
@@ -58,8 +58,8 @@ class CampusFoundFlowTest {
 
         loginRule.launchActivity(null)
 
-        onView(withId(R.id.emailInput)).perform(replaceText("test@university.edu"), closeSoftKeyboard())
-        onView(withId(R.id.passwordInput)).perform(typeText("password123"), closeSoftKeyboard())
+        onView(withId(R.id.emailInput)).perform(replaceText("demo@test.com"), closeSoftKeyboard())
+        onView(withId(R.id.passwordInput)).perform(typeText("123456"), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
 
         waitForMainActivity()
@@ -73,8 +73,8 @@ class CampusFoundFlowTest {
 
         loginRule.launchActivity(null)
 
-        onView(withId(R.id.emailInput)).perform(typeText("012345678"), closeSoftKeyboard())
-        onView(withId(R.id.passwordInput)).perform(typeText("password123"), closeSoftKeyboard())
+        onView(withId(R.id.emailInput)).perform(replaceText("vit@gmail.com"), closeSoftKeyboard())
+        onView(withId(R.id.passwordInput)).perform(typeText("12345678"), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
 
         waitForMainActivity()
@@ -85,7 +85,7 @@ class CampusFoundFlowTest {
     fun login_registerDialog_opensAndCloses() {
         loginRule.launchActivity(null)
 
-        onView(withId(R.id.registerButton)).perform(click())
+        onView(withId(R.id.registerTab)).perform(click())
         onView(withText(R.string.create_account)).check(matches(isDisplayed()))
         onView(withId(R.id.registerUsernameInput)).check(matches(isDisplayed()))
         onView(withId(R.id.closeRegisterButton)).perform(click())
@@ -247,29 +247,19 @@ class CampusFoundFlowTest {
     }
 
     private fun seedTestUser() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        SessionManager(context).registerUser(
-            "Test Student",
-            "test@university.edu",
-            "012345678",
-            "password123"
-        )
+        // Uses MockAPI account — no local registration needed.
     }
 
     private fun launchLoggedInMain() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        SessionManager(context).registerUser(
-            "Flow Tester",
-            "flow@university.edu",
-            "098765432",
-            "password123"
-        )
         SessionManager(context).saveSession(
-            email = "flow@university.edu",
-            name = "Flow Tester",
-            phone = "85598765432",
+            userId = "1",
+            email = "demo@test.com",
+            name = "Demo User",
+            phone = "",
             studentId = "",
-            rememberMe = true
+            rememberMe = true,
+            password = "123456"
         )
 
         loginRule.launchActivity(null)
