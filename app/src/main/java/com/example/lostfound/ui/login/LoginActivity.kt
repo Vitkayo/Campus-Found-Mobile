@@ -3,6 +3,7 @@ package com.example.lostfound.ui.login
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lostfound.R
@@ -45,10 +46,15 @@ class LoginActivity : AppCompatActivity() {
 
         ThemeToggleBinding.bind(binding.darkModeButton, this)
 
+        binding.signInTab.setOnClickListener { binding.emailInput.requestFocus() }
         binding.loginButton.setOnClickListener { attemptLogin() }
-        binding.registerButton.setOnClickListener { showRegisterDialog() }
+        binding.registerTab.setOnClickListener { showRegisterDialog() }
+        binding.browseGuestButton.setOnClickListener { navigateToMain() }
+        binding.forgotPasswordText.setOnClickListener {
+            Toast.makeText(this, R.string.forgot_password_unavailable, Toast.LENGTH_SHORT).show()
+        }
 
-        binding.emailInput.requestFocus()
+        binding.root.requestFocus()
     }
 
     override fun onResume() {
