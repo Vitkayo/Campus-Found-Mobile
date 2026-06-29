@@ -1,104 +1,85 @@
 # Campus Found
 
-**Canonical project folder** — merged from *Lost and Found Mobile 1* (code + tests) and *Mobile 2* (Firebase config, scripts, release APKs). Use this copy for development and submission.
+Campus Found is an Android lost and found app for Royal University of Phnom Penh
+(RUPP). Students can browse lost or found items, post reports, open item details,
+and manage their own profile.
 
-**Location:** `D:\Lost and Found Mobile 1`
+This is a student demo release. It does not include an admin dashboard or staff
+moderation tools.
 
-Lost & found mobile app for **Royal University of Phnom Penh (RUPP)** — Android (Kotlin), Material Design, MockAPI backend, optional Firebase Storage for photos.
-
-**This release is a student user demo only.** There is no admin panel or staff dashboard. Features like mark-as-claimed, edit posts, and notifications are planned for a future semester.
-
----
-
-## User features (this semester)
+## Features
 
 | Area | What students can do |
-|------|----------------------|
-| **Account** | Register (username, email, phone, password) · Login with **email or phone** · Edit profile · Logout |
-| **Home** | Browse campus items · Search · Filter (Lost / Found / category) · Pull to refresh · Open item detail |
-| **Report** | Post lost/found item (title & category required; photo, location, contact optional) · RUPP location picker |
-| **Profile** | View stats · My posted items · Delete own posts |
-| **App** | Light / dark mode · Offline cache (Room) when network fails |
+| --- | --- |
+| Account | Register, login with email or phone, edit profile, logout |
+| Home | Browse items, search, filter by status or category, pull to refresh |
+| Report | Post a lost or found item with optional photo, location, and contact info |
+| Detail | View item photo, status, location, reporter, and contact action |
+| Profile | View stats, manage own posts, delete own posts |
+| App | Light/dark mode, Room cache fallback when network fails |
 
----
+## Demo Flow
 
-## User demo script (~3 minutes)
+1. Register a new account.
+2. Login with email or phone number.
+3. Browse Home, search, and use filter chips.
+4. Open an item detail page.
+5. Report a new lost or found item.
+6. Return to Home and pull to refresh.
+7. Open Profile, edit profile, and logout.
 
-Use this order when presenting to your teacher:
+## Tech Stack
 
-1. **Register** — Create account with username, email, phone, password.
-2. **Login** — Show login works with email *or* phone number.
-3. **Home** — Scroll the list, use a filter chip (e.g. Electronics), search (e.g. “wallet”).
-4. **Detail** — Tap an item; show photo, location, contact link.
-5. **Report** — Post a new lost/found item with RUPP location.
-6. **Home again** — Pull to refresh; new post appears near the top.
-7. **Profile** — Show your name, my posts, edit profile, logout.
+- Kotlin
+- Android XML layouts
+- Material Design 3 components
+- ViewBinding
+- Navigation component
+- Hilt dependency injection
+- Retrofit
+- Room
+- Glide
+- MockAPI backend
+- Optional Firebase Storage support for photos
 
----
+## Project Info
 
-## Planned for next semester (not in this build)
-
-- Mark items as **claimed** / resolved  
-- **Edit** my posts  
-- **Recently viewed** items  
-- Admin / staff tools (if required by course)  
-- Push notifications · Khmer localization · CI pipeline  
-
----
+- Application ID: `com.lostfound`
+- Android namespace: `com.example.lostfound`
+- Version: `1.1`
+- Version code: `2`
+- Compile SDK: `35`
+- Minimum SDK: `28`
+- Target SDK: `35`
+- MockAPI base URL: `https://6a1460d76c7db8aac05469d9.mockapi.io/`
 
 ## Setup
 
-### Run the app (required once per machine)
+1. Install Android Studio with the Android SDK.
+2. Copy `local.properties.example` to `local.properties`.
+3. Update `sdk.dir` in `local.properties` for your machine.
+4. Open the project in Android Studio and run the `app` configuration.
 
-1. **Android SDK** — Install [Android Studio](https://developer.android.com/studio) (includes SDK + emulator).
-2. **`local.properties`** — Gitignored. Copy the example and fix the SDK path:
-   ```powershell
-   cd "D:\Lost and Found Mobile"
-   copy local.properties.example local.properties
-   ```
-   Edit `sdk.dir=` to your SDK folder (default on Windows):
-   `C:\Users\<You>\AppData\Local\Android\Sdk`
-3. **Open project** in Android Studio → wait for Gradle sync → start an emulator (API 28+) → **Run** ▶ `app`.
+Command line build:
 
-**Command line (emulator or USB device connected):**
 ```powershell
-cd "D:\Lost and Found Mobile"
+.\gradlew.bat :app:assembleDebug
+```
+
+Command line install, with an emulator or USB device connected:
+
+```powershell
 .\gradlew.bat :app:installDebug
 ```
 
-4. **Photos (free demo — no Firebase billing):** Images are compressed and sent to MockAPI as base64 in `imageUrl`. Works on the free Spark plan; `imageUrl` looks long in the MockAPI dashboard — that is normal.
-   - **Optional (paid):** Firebase Storage needs the **Blaze** plan. If you upgrade later, see [docs/FIREBASE_MOCKAPI_SETUP.md](docs/FIREBASE_MOCKAPI_SETUP.md) — add `app/google-services.json`, enable Storage, rebuild.
-5. **Internet** — Home/Report need network for MockAPI (`https://6a1460d76c7db8aac05469d9.mockapi.io/`).
+## Firebase
 
-### Local automation (`scripts/`)
+The app can run without Firebase Storage by using the built-in photo fallback.
+If Firebase Storage is enabled later, copy `app/google-services.json.example` to
+`app/google-services.json`, add the real Firebase config, and rebuild.
 
-From the project root (emulator/device connected):
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\run_all.ps1
-```
-
-This seeds MockAPI demo items, builds debug APK, installs, seeds a login session (`session.xml.example` → `session.xml`), runs a manual smoke test, then Espresso tests.
-
-Pre-built release APKs (if present): `release/CampusFound-1.1.apk`
-
-```powershell
-java -jar gradle\wrapper\gradle-wrapper.jar -p . :app:assembleDebug
-```
-
-Release build:
-
-```powershell
-java -jar gradle\wrapper\gradle-wrapper.jar -p . :app:assembleRelease
-```
-
-## Stack
-
-- Kotlin, ViewBinding, Navigation, Room, Retrofit, Glide
-- MockAPI: `https://6a1460d76c7db8aac05469d9.mockapi.io/`
-- Package: `com.lostfound`
-- Version: **1.1** (`versionCode` 2)
+`app/google-services.json` is intentionally ignored by Git.
 
 ## Author
 
-**Vitkayo** — Campus Found, RUPP Lost & Found project
+Vitkayo - Campus Found, RUPP Lost and Found project.
