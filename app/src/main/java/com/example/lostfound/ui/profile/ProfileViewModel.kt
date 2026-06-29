@@ -3,6 +3,7 @@ package com.example.lostfound.ui.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lostfound.data.ItemRepository
+import com.example.lostfound.data.UserRepository
 import com.example.lostfound.model.Item
 import com.example.lostfound.service.SessionManager
 import com.example.lostfound.util.CredentialUtils
@@ -31,7 +32,8 @@ data class ProfileUiState(
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val sessionManager: SessionManager,
-    private val repository: ItemRepository
+    private val repository: ItemRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -58,6 +60,7 @@ class ProfileViewModel @Inject constructor(
         data object InvalidPhone : ProfileUpdateResult()
         data object PasswordTooShort : ProfileUpdateResult()
         data object PasswordMismatch : ProfileUpdateResult()
+        data object NetworkError : ProfileUpdateResult()
     }
 
     fun updateAccount(
@@ -66,24 +69,68 @@ class ProfileViewModel @Inject constructor(
         phone: String,
         newPassword: String,
         confirmPassword: String,
-        profileImage: String? = null
-    ): ProfileUpdateResult {
-        if (name.isBlank()) return ProfileUpdateResult.NameRequired
-        if (!CredentialUtils.isValidEmail(email)) return ProfileUpdateResult.InvalidEmail
-        if (!CredentialUtils.isValidPhone(phone)) return ProfileUpdateResult.InvalidPhone
+        profileImage: String? = null,
+        onResult: (ProfileUpdateResult) -> Unit
+    ) {
+        if (name.isBlank()) {
+            onResult(ProfileUpdateResult.NameRequired)
+            return
+        }
+        if (!CredentialUtils.isValidEmail(email)) {
+            onResult(ProfileUpdateResult.InvalidEmail)
+            return
+        }
+        if (!CredentialUtils.isValidPhone(phone)) {
+            onResult(ProfileUpdateResult.InvalidPhone)
+            return
+        }
 
         val passwordChanging = newPassword.isNotBlank() || confirmPassword.isNotBlank()
         if (passwordChanging) {
-            if (newPassword.length < 6) return ProfileUpdateResult.PasswordTooShort
-            if (newPassword != confirmPassword) return ProfileUpdateResult.PasswordMismatch
+            if (newPassword.length < 6) {
+                onResult(ProfileUpdateResult.PasswordTooShort)
+                return
+            }
+            if (newPassword != confirmPassword) {
+                onResult(ProfileUpdateResult.PasswordMismatch)
+                return
+            }
         }
 
-        if (!sessionManager.updateAccount(name, email, phone, newPassword, confirmPassword, profileImage)) {
-            return ProfileUpdateResult.InvalidEmail
+        val userId = sessionManager.getUserId()
+        if (userId.isBlank()) {
+            if (!sessionManager.updateAccount(name, email, phone, newPassword, confirmPassword, profileImage)) {
+                onResult(ProfileUpdateResult.InvalidEmail)
+                return
+            }
+            refreshUserInfo()
+            onResult(ProfileUpdateResult.Success)
+            return
         }
 
-        refreshUserInfo()
-        return ProfileUpdateResult.Success
+        viewModelScope.launch {
+            try {
+                val password = if (passwordChanging) {
+                    newPassword
+                } else {
+                    sessionManager.getStoredPassword()
+                }
+                val updated = userRepository.updateUser(userId, name, email, phone, password)
+                sessionManager.updateAccount(
+                    name = updated.name.orEmpty(),
+                    email = updated.email.orEmpty(),
+                    phone = updated.phone.orEmpty(),
+                    newPassword = if (passwordChanging) newPassword else "",
+                    confirmPassword = if (passwordChanging) confirmPassword else "",
+                    profileImage = profileImage,
+                    storedPassword = password
+                )
+                refreshUserInfo()
+                onResult(ProfileUpdateResult.Success)
+            } catch (_: Exception) {
+                onResult(ProfileUpdateResult.NetworkError)
+            }
+        }
     }
 
     fun loadMyItemsIfNeeded() {

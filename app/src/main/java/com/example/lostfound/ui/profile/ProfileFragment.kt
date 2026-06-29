@@ -119,30 +119,40 @@ class ProfileFragment : Fragment() {
                 val newPassword = dialogBinding.editPasswordInput.text?.toString().orEmpty()
                 val confirmPassword = dialogBinding.editConfirmPasswordInput.text?.toString().orEmpty()
 
-                when (
-                    viewModel.updateAccount(name, email, phone, newPassword, confirmPassword, tempProfilePath)
-                ) {
-                    ProfileViewModel.ProfileUpdateResult.Success -> {
-                        dialog.dismiss()
-                        Snackbar.make(binding.root, R.string.profile_updated, Snackbar.LENGTH_SHORT).show()
-                    }
-                    ProfileViewModel.ProfileUpdateResult.NameRequired -> {
-                        dialogBinding.editNameLayout.error = getString(R.string.edit_profile_name_required)
-                    }
-                    ProfileViewModel.ProfileUpdateResult.InvalidEmail -> {
-                        dialogBinding.editEmailLayout.error = getString(R.string.invalid_login_identifier)
-                    }
-                    ProfileViewModel.ProfileUpdateResult.InvalidPhone -> {
-                        dialogBinding.editPhoneLayout.error =
-                            getString(R.string.edit_profile_invalid_phone)
-                    }
-                    ProfileViewModel.ProfileUpdateResult.PasswordTooShort -> {
-                        dialogBinding.editPasswordLayout.error =
-                            getString(R.string.edit_profile_password_short)
-                    }
-                    ProfileViewModel.ProfileUpdateResult.PasswordMismatch -> {
-                        dialogBinding.editConfirmPasswordLayout.error =
-                            getString(R.string.edit_profile_password_mismatch)
+                viewModel.updateAccount(
+                    name,
+                    email,
+                    phone,
+                    newPassword,
+                    confirmPassword,
+                    tempProfilePath
+                ) { result ->
+                    when (result) {
+                        ProfileViewModel.ProfileUpdateResult.Success -> {
+                            dialog.dismiss()
+                            Snackbar.make(binding.root, R.string.profile_updated, Snackbar.LENGTH_SHORT).show()
+                        }
+                        ProfileViewModel.ProfileUpdateResult.NameRequired -> {
+                            dialogBinding.editNameLayout.error = getString(R.string.edit_profile_name_required)
+                        }
+                        ProfileViewModel.ProfileUpdateResult.InvalidEmail -> {
+                            dialogBinding.editEmailLayout.error = getString(R.string.invalid_login_identifier)
+                        }
+                        ProfileViewModel.ProfileUpdateResult.InvalidPhone -> {
+                            dialogBinding.editPhoneLayout.error =
+                                getString(R.string.edit_profile_invalid_phone)
+                        }
+                        ProfileViewModel.ProfileUpdateResult.PasswordTooShort -> {
+                            dialogBinding.editPasswordLayout.error =
+                                getString(R.string.edit_profile_password_short)
+                        }
+                        ProfileViewModel.ProfileUpdateResult.PasswordMismatch -> {
+                            dialogBinding.editConfirmPasswordLayout.error =
+                                getString(R.string.edit_profile_password_mismatch)
+                        }
+                        ProfileViewModel.ProfileUpdateResult.NetworkError -> {
+                            Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
