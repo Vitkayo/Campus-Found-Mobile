@@ -13,6 +13,7 @@ import com.example.lostfound.databinding.ActivityItemDetailBinding
 import com.example.lostfound.util.ContactLinkHelper
 import com.example.lostfound.util.DateUtils
 import com.example.lostfound.util.ImageLoader
+import com.example.lostfound.util.LocationHelper
 import com.example.lostfound.util.MapHelper
 import com.example.lostfound.util.StatusUtils
 import com.example.lostfound.util.SystemBars
@@ -68,7 +69,7 @@ class ItemDetailActivity : AppCompatActivity() {
                     binding.detailTitle.text = item.title.orEmpty()
                     binding.detailDescription.text = item.description.orEmpty()
 
-                    val location = item.location.orEmpty().trim()
+                    val location = LocationHelper.formatDisplayLocation(item.location)
                     binding.detailLocation.text = location.ifBlank { getString(R.string.location_not_set) }
                     setupLocationActions(location)
 

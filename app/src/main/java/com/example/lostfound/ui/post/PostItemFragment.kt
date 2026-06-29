@@ -103,7 +103,6 @@ class PostItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         sessionManager = SessionManager(requireContext())
         setupCategoryDropdown()
-        setupLocationDropdown()
         setupStatusSelector()
         restoreDraft()
         setupListeners()
@@ -119,16 +118,6 @@ class PostItemFragment : Fragment() {
             categories
         )
         binding.categoryInput.setAdapter(adapter)
-    }
-
-    private fun setupLocationDropdown() {
-        val locations = resources.getStringArray(R.array.rupp_locations)
-        val adapter = android.widget.ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            locations
-        )
-        binding.locationInput.setAdapter(adapter)
     }
 
     private fun setupStatusSelector() {

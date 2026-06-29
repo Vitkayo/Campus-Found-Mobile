@@ -71,4 +71,14 @@ object LocationHelper {
             location.longitude
         )
     }
+
+    fun formatDisplayLocation(location: String?): String {
+        if (location.isNullOrBlank()) return ""
+        return location
+            .replace(Regex(",\\s*RUPP\\b", RegexOption.IGNORE_CASE), "")
+            .replace(Regex("\\bRUPP\\s*,\\s*", RegexOption.IGNORE_CASE), "")
+            .replace(Regex("^RUPP\\s+", RegexOption.IGNORE_CASE), "")
+            .replace(Regex("\\s+RUPP$", RegexOption.IGNORE_CASE), "")
+            .trim()
+    }
 }

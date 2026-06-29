@@ -9,6 +9,7 @@ import com.example.lostfound.databinding.ItemProfileCardBinding
 import com.example.lostfound.model.Item
 import com.example.lostfound.util.DateUtils
 import com.example.lostfound.util.ImageLoader
+import com.example.lostfound.util.LocationHelper
 import com.example.lostfound.util.StatusUtils
 
 class ProfileItemAdapter(
@@ -40,7 +41,7 @@ class ProfileItemAdapter(
                 com.example.lostfound.R.string.item_reported_at,
                 DateUtils.formatPostedDate(item.createdAt ?: item.date)
             )
-            binding.itemLocation.text = item.location.orEmpty()
+            binding.itemLocation.text = LocationHelper.formatDisplayLocation(item.location)
             StatusUtils.applyStatusBadge(context, item.status, binding.statusBadge)
             ImageLoader.loadThumbnail(binding.itemImage, item.imageUrl)
             binding.root.setOnClickListener { onItemClick(item) }
