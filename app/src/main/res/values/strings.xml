@@ -79,6 +79,10 @@
     <string name="date">Date</string>
     <string name="my_posted_items">My Posted Items</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="edit_profile_subtitle">Keep your contact details current</string>
+    <string name="tap_to_change_photo">Tap to change photo</string>
+    <string name="account_info">Account Info</string>
+    <string name="change_password">Change Password</string>
     <string name="logout">Logout</string>
     <string name="status_lost">Lost</string>
     <string name="status_found">Found</string>
