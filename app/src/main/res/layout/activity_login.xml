@@ -10,31 +10,38 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:fillViewport="true"
-        android:paddingTop="8dp">
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="52dp"
-            android:paddingBottom="24dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_login_hero"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:paddingBottom="16dp">
+                android:paddingStart="28dp"
+                android:paddingTop="56dp"
+                android:paddingEnd="28dp"
+                android:paddingBottom="46dp">
 
-                <ImageView
-                    android:layout_width="@dimen/login_icon_size"
-                    android:layout_height="@dimen/login_icon_size"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/app_name"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_login_icon" />
+                <FrameLayout
+                    android:layout_width="92dp"
+                    android:layout_height="92dp"
+                    android:background="@drawable/bg_login_logo_tile"
+                    android:elevation="8dp"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/app_name"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_login_icon" />
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -42,10 +49,15 @@
                     android:layout_marginTop="16dp"
                     android:gravity="center"
                     android:text="@string/app_name"
-                    android:textAlignment="center"
-                    android:textColor="@color/primary"
-                    android:textSize="@dimen/text_headline"
+                    android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                    android:textColor="@color/on_primary"
                     android:textStyle="bold" />
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="7dp"
+                    android:background="@drawable/bg_auth_underline" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -53,36 +65,94 @@
                     android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:text="@string/tagline"
-                    android:textAlignment="center"
-                    android:textColor="@color/on_surface_variant"
-                    android:textSize="@dimen/text_body" />
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                    android:textColor="#B3FFFFFF" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_auth_chip"
+                        android:gravity="center"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/auth_chip_keys"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                        android:textColor="@color/on_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_auth_chip"
+                        android:gravity="center"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/auth_chip_id_cards"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                        android:textColor="@color/on_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_auth_chip"
+                        android:gravity="center"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/auth_chip_devices"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                        android:textColor="@color/on_primary" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-20dp"
                 android:background="@drawable/bg_login_card"
+                android:elevation="8dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:paddingStart="20dp"
+                android:paddingTop="18dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="28dp">
+
+                <View
+                    android:layout_width="36dp"
+                    android:layout_height="4dp"
+                    android:layout_marginBottom="18dp"
+                    android:background="@drawable/bg_auth_handle" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:gravity="center"
                     android:text="@string/welcome_back"
-                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                     android:textColor="@color/on_surface"
-                    android:textSize="@dimen/text_subtitle"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="18dp"
+                    android:gravity="center"
+                    android:text="@string/welcome_back_subtitle"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                    android:textColor="@color/on_surface_variant" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/emailLayout"
-                    style="@style/Widget.CampusFound.TextInput"
+                    style="@style/Widget.CampusFound.TextInput.Compact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="10dp"
                     android:hint="@string/email_or_phone">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -91,15 +161,16 @@
                         android:layout_height="wrap_content"
                         android:imeOptions="actionNext"
                         android:inputType="text"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textColor="@color/on_surface" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/passwordLayout"
-                    style="@style/Widget.CampusFound.TextInput"
+                    style="@style/Widget.CampusFound.TextInput.Compact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="8dp"
                     android:hint="@string/password"
                     app:endIconMode="password_toggle">
 
@@ -109,32 +180,65 @@
                         android:layout_height="wrap_content"
                         android:imeOptions="actionDone"
                         android:inputType="textPassword"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textColor="@color/on_surface" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/rememberCheckBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="10dp"
                     android:text="@string/remember_me"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     android:textColor="@color/on_surface_variant" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/loginButton"
                     style="@style/Widget.CampusFound.Button.Primary"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:text="@string/login" />
+                    android:layout_height="52dp"
+                    android:text="@string/login"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    app:cornerRadius="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/outline_variant" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/or_create_account"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                        android:textColor="@color/on_surface_variant" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/outline_variant" />
+                </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/registerButton"
-                    style="@style/Widget.CampusFound.Button.Outlined"
+                    style="@style/Widget.CampusFound.Button.CompactOutlined"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/register" />
+                    android:layout_height="52dp"
+                    android:text="@string/register"
+                    android:textAllCaps="false"
+                    app:cornerRadius="10dp" />
 
                 <TextView
                     android:id="@+id/errorText"
@@ -143,13 +247,13 @@
                     android:layout_marginTop="12dp"
                     android:gravity="center"
                     android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                     android:textColor="@color/error"
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Drawn last so it stays on top and receives taps (no extra grey circle background). -->
     <ImageButton
         android:id="@+id/darkModeButton"
         android:layout_width="@dimen/theme_toggle_size"

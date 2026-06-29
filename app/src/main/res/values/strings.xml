@@ -20,6 +20,11 @@
     <string name="no_posts_hint">Report a lost or found item to get started</string>
     <string name="location_hint_rupp">Pick a common RUPP spot or type your own</string>
     <string name="welcome_back">Welcome back</string>
+    <string name="welcome_back_subtitle">Sign in to manage campus lost and found posts</string>
+    <string name="auth_chip_keys">Keys</string>
+    <string name="auth_chip_id_cards">ID Cards</string>
+    <string name="auth_chip_devices">Devices</string>
+    <string name="or_create_account">Or create a new account</string>
     <string name="email">Email Address</string>
     <string name="email_or_phone">Email or Phone Number</string>
     <string name="username">Username</string>
@@ -76,6 +81,7 @@
     <string name="maps_not_available">No maps app found on this device.</string>
     <string name="close">Close</string>
     <string name="create_account">Create Account</string>
+    <string name="create_account_subtitle">Join Campus Found with your student contact details</string>
     <string name="date">Date</string>
     <string name="my_posted_items">My Posted Items</string>
     <string name="edit_profile">Edit Profile</string>
