@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -55,6 +56,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.root.requestFocus()
         setupRecyclerView()
         setupSwipeRefresh()
         setupFilters()
@@ -114,6 +116,15 @@ class HomeFragment : Fragment() {
                 isCheckable = true
                 isChecked = filter == selected
                 tag = "filter_chip_$filter"
+                minHeight = dp(32)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                chipCornerRadius = dp(16).toFloat()
+                chipStartPadding = dp(12).toFloat()
+                chipEndPadding = dp(12).toFloat()
+                textStartPadding = 0f
+                textEndPadding = 0f
+                checkedIcon = null
+                isCheckedIconVisible = false
             }
             binding.filterChipGroup.addView(chip)
         }
@@ -217,6 +228,7 @@ class HomeFragment : Fragment() {
                     if (!state.error.isNullOrBlank()) View.VISIBLE else View.GONE
                 binding.errorMessageText.text = state.error
 
+                updateHomeCounts(state)
                 syncChipSelection(state.selectedFilter)
 
                 val currentSearch = binding.searchInput.text?.toString().orEmpty()
@@ -234,6 +246,22 @@ class HomeFragment : Fragment() {
         }
         startActivity(intent)
     }
+
+    private fun updateHomeCounts(state: HomeUiState) {
+        val lost = state.items.count { it.status.equals("lost", ignoreCase = true) }
+        val found = state.items.count { it.status.equals("found", ignoreCase = true) }
+        binding.lostCountText.text = getString(R.string.home_lost_count, lost)
+        binding.foundCountText.text = getString(R.string.home_found_count, found)
+        binding.totalCountText.text = getString(R.string.home_total_count, state.items.size)
+        binding.resultsCountText.text = getString(R.string.home_results_count, state.items.size)
+    }
+
+    private fun dp(value: Int): Int =
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            value.toFloat(),
+            resources.displayMetrics
+        ).toInt()
 
     override fun onDestroyView() {
         searchHandler.removeCallbacksAndMessages(null)

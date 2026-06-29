@@ -59,4 +59,9 @@
 
     <style name="ShapeAppearance.CampusFound.BottomNavIndicator" parent="ShapeAppearance.Material3.Corner.Full" />
 
+    <style name="ShapeAppearance.CampusFound.Fab" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
 </resources>
