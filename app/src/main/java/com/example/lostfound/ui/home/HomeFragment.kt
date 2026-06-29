@@ -42,7 +42,6 @@ class HomeFragment : Fragment() {
     @Inject
     lateinit var sessionManager: SessionManager
     private lateinit var adapter: ItemAdapter
-    private lateinit var recentAdapter: RecentItemAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private val searchHandler = Handler(Looper.getMainLooper())
     private var pendingSearchQuery: Runnable? = null
@@ -108,9 +107,6 @@ class HomeFragment : Fragment() {
         binding.itemsRecyclerView.adapter = adapter
         binding.itemsRecyclerView.setHasFixedSize(true)
         binding.itemsRecyclerView.itemAnimator?.changeDuration = 0
-
-        recentAdapter = RecentItemAdapter { item -> openItemDetail(item) }
-        binding.recentItemsRecyclerView.adapter = recentAdapter
     }
 
     private fun setupFilters() {
@@ -222,9 +218,6 @@ class HomeFragment : Fragment() {
                         binding.itemsRecyclerView.scrollToPosition(0)
                     }
                 }
-
-                recentAdapter.submitList(state.recentItems)
-                binding.recentItemsContainer.visibility = if (state.recentItems.isNotEmpty()) View.VISIBLE else View.GONE
 
                 binding.emptyStateLayout.visibility =
                     if (state.items.isEmpty() && !state.isLoading && !state.isRefreshing) View.VISIBLE else View.GONE

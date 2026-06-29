@@ -59,9 +59,7 @@ class ItemRepository @Inject constructor(
     }
 
     suspend fun getItemById(id: String): Item = withContext(Dispatchers.IO) {
-        val item = apiService.getItem(id)
-        recentDao.insert(item.toRecentRecord())
-        item
+        apiService.getItem(id)
     }
 
     suspend fun createItem(item: Item): Item = withContext(Dispatchers.IO) {

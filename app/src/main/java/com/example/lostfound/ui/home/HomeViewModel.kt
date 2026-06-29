@@ -44,12 +44,6 @@ class HomeViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            repository.recentItemsFlow.collectLatest { recent ->
-                _uiState.update { it.copy(recentItems = recent) }
-            }
-        }
-
-        viewModelScope.launch {
             combine(
                 repository.itemsFlow,
                 _uiState.map { it.searchQuery }.distinctUntilChanged().debounce(300).onStart { emit(_uiState.value.searchQuery) },
