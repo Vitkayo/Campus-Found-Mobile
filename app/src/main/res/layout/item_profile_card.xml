@@ -6,12 +6,13 @@
     android:background="@drawable/bg_item_card"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/itemImage"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@drawable/bg_item_thumb"
         android:contentDescription="@string/title"
         android:scaleType="centerCrop"
         android:src="@drawable/placeholder_item" />
@@ -19,7 +20,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="10dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -37,7 +38,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/on_surface"
-                android:textSize="18sp"
+                android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -55,23 +56,25 @@
             android:id="@+id/itemDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="3dp"
             android:textColor="@color/on_surface_variant"
-            android:textSize="14sp" />
+            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/itemLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="3dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/on_surface_variant"
             android:textSize="11sp" />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/deleteButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/delete"
         android:src="@android:drawable/ic_menu_delete"

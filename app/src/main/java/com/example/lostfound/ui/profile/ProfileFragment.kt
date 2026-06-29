@@ -178,6 +178,8 @@ class ProfileFragment : Fragment() {
                     binding.totalPostsText.text = state.totalPosts.toString()
                     binding.lostCountText.text = state.lostCount.toString()
                     binding.foundCountText.text = state.foundCount.toString()
+                    binding.postsCountBadge.text =
+                        getString(R.string.profile_posts_count, state.totalPosts)
                 }
             }
         }

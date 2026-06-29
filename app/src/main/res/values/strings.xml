@@ -15,6 +15,9 @@
     <string name="contact_reporter">Contact Reporter</string>
     <string name="delete_post">Delete Post</string>
     <string name="category_label">Category</string>
+    <string name="profile_posts_count">%1$d posts</string>
+    <string name="no_posts_yet">No posts yet</string>
+    <string name="no_posts_hint">Report a lost or found item to get started</string>
     <string name="location_hint_rupp">Pick a common RUPP spot or type your own</string>
     <string name="welcome_back">Welcome back</string>
     <string name="email">Email Address</string>
