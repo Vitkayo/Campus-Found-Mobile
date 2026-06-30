@@ -1,36 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Partial Khmer localization; English fallback for untranslated keys. -->
+
     <string name="app_name">សាកលវិទ្យាល័យ Campus Found</string>
-    <string name="login_title">ចូលប្រើប្រាស់</string>
-    <string name="register_title">ចុះឈ្មោះ</string>
-    <string name="email_hint">អុីមែល ឬ លេខទូរស័ព្ទ</string>
-    <string name="password_hint">ពាក្យសម្ងាត់</string>
-    <string name="login_button">ចូល</string>
-    <string name="register_link">មិនទាន់មានគណនី? ចុះឈ្មោះនៅទីនេះ</string>
-    
-    <string name="nav_home">ទំព័រដើម</string>
-    <string name="nav_report">រាយការណ៍</string>
-    <string name="nav_profile">គណនី</string>
-    
-    <string name="search_hint">ស្វែងរករបស់របរ…</string>
-    <string name="filter_all">ទាំងអស់</string>
-    <string name="filter_lost">បាត់</string>
-    <string name="filter_found">ឃើញ</string>
-    
-    <string name="post_item_title">រាយការណ៍របស់របរ</string>
-    <string name="item_title_hint">ចំណងជើង</string>
-    <string name="category_hint">ប្រភេទ</string>
+    <string name="tagline">Lost &amp; found at Royal University of Phnom Penh.</string>
+    <string name="home_subtitle">Lost &amp; Found</string>
+    <string name="home_lost_count">%1$d Lost</string>
+    <string name="home_found_count">%1$d Found</string>
+    <string name="home_total_count">%1$d Total</string>
+    <string name="home_results_count">%1$d results</string>
+    <string name="section_item_photo">Item Photo</string>
+    <string name="section_item_details">Item Details</string>
+    <string name="section_location">Location</string>
+    <string name="section_contact_date">Contact &amp; Date</string>
+    <string name="report_progress_hint">Complete the form below</string>
+    <string name="item_detail_title">Item Detail</string>
+    <string name="contact_reporter">Contact Reporter</string>
+    <string name="delete_post">Delete Post</string>
+    <string name="category_label">Category</string>
+    <string name="profile_posts_count">%1$d posts</string>
+    <string name="no_posts_yet">No posts yet</string>
+    <string name="no_posts_hint">Report a lost or found item to get started</string>
     <string name="location_hint">ទីតាំង</string>
-    <string name="description_hint">ព័ត៌មានលម្អិត</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="welcome_back_subtitle">Sign in to manage campus lost and found posts</string>
+    <string name="sign_in">Sign In</string>
+    <string name="student_email">Student Email</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="forgot_password_title">Reset Password</string>
+    <string name="forgot_password_subtitle">Enter your registered email and choose a new password.</string>
+    <string name="forgot_password_reset">Reset Password</string>
+    <string name="forgot_password_success">Password updated. You can sign in now.</string>
+    <string name="forgot_password_email_not_found">No account found with this email.</string>
+    <string name="forgot_password_unavailable">Password reset is not available in this demo.</string>
+    <string name="browse_as_guest">Browse as Guest</string>
+    <string name="terms_hint">By continuing, you agree to the Terms of Service</string>
+    <string name="auth_chip_keys">Keys</string>
+    <string name="auth_chip_id_cards">ID Cards</string>
+    <string name="auth_chip_devices">Devices</string>
+    <string name="or_create_account">Or create a new account</string>
+    <string name="email">Email Address</string>
+    <string name="email_or_phone">Email or Phone Number</string>
+    <string name="username">Username</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="phone_label">Phone: %1$s</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="edit_profile_password_hint">Leave blank to keep your current password</string>
+    <string name="edit_profile_name_required">Username is required</string>
+    <string name="edit_profile_password_mismatch">Passwords do not match</string>
+    <string name="edit_profile_password_short">Password must be at least 6 characters</string>
+    <string name="edit_profile_invalid_phone">Enter a valid phone number (8+ digits)</string>
+    <string name="password">Password</string>
+    <string name="login_identifier_required">Email or phone number is required</string>
+    <string name="invalid_login_identifier">Enter a valid email or phone number</string>
+    <string name="invalid_login_credentials">Invalid email/phone or password</string>
+    <string name="login_register_first">Create an account first using Register.</string>
+    <string name="login_required_title">Login Required</string>
+    <string name="login_required_message">Please login or create an account to use this feature.</string>
+    <string name="continue_browsing">Continue Browsing</string>
+    <string name="password_min_length">Password must be at least 6 characters</string>
+    <string name="register_validation_error">Please enter username, valid email, phone (8+ digits), and password (6+ characters)</string>
+    <string name="registration_success">Registration successful. You can login now.</string>
+    <string name="remember_me">Remember me</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="search_hint">ស្វែងរករបស់របរ…</string>
+    <string name="home">Home</string>
+    <string name="report">Report</string>
+    <string name="profile">Profile</string>
+    <string name="post_item">Report Item</string>
+    <string name="submit_post">Submit Post</string>
+    <string name="item_status">Item Status</string>
+    <string name="selected_status">Selected: %1$s</string>
+    <string name="lost">Lost</string>
+    <string name="found">Found</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="upload_hint">JPEG or PNG · use gallery or camera below</string>
+    <string name="choose_photo">Choose photo</string>
+    <string name="take_photo">Take photo</string>
+    <string name="camera_permission_needed">Camera permission is needed to take a photo</string>
+    <string name="title">Title</string>
+    <string name="category">Category</string>
+    <string name="description">Description</string>
+    <string name="location">Location</string>
+    <string name="location_example">A610, Library</string>
+    <string name="use_my_location">Use my location</string>
+    <string name="contact_info">Contact</string>
     <string name="contact_hint">ព័ត៌មានទំនាក់ទំនង</string>
-    <string name="submit_button">ដាក់ស្នើ</string>
-    
-    <string name="profile_title">គណនីរបស់ខ្ញុំ</string>
+    <string name="location_not_set">Location not specified.</string>
+    <string name="switch_to_dark_mode">Switch to dark mode</string>
+    <string name="switch_to_light_mode">Switch to light mode</string>
+    <string name="location_permission_needed">Location permission is needed to detect your position.</string>
+    <string name="profile_updated">Profile updated</string>
+    <string name="open_in_maps">Open in Maps</string>
+    <string name="tap_contact_hint">Tap to call, message, or open a link</string>
+    <string name="contact_missing_hint">No contact listed. Ask %1$s on campus or check back later.</string>
+    <string name="maps_not_available">No maps app found on this device.</string>
+    <string name="close">Close</string>
+    <string name="create_account">Create Account</string>
+    <string name="create_account_subtitle">Join Campus Found with your student contact details</string>
+    <string name="date">Date</string>
+    <string name="my_posted_items">My Posted Items</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="edit_profile_subtitle">Keep your contact details current</string>
+    <string name="tap_to_change_photo">Tap to change photo</string>
+    <string name="account_info">Account Info</string>
+    <string name="change_password">Change Password</string>
     <string name="logout">ចាកចេញ</string>
-    <string name="delete">លុប</string>
-    
-    <string name="item_meta_format">%1$s • %2$s</string>
-    <string name="item_reported_at">បានរាយការណ៍នៅ: %1$s</string>
     <string name="status_lost">បាត់</string>
     <string name="status_found">ឃើញ</string>
+    <string name="status_claimed">Claimed</string>
+    <string name="mark_claimed">Mark as Claimed</string>
+    <string name="success_claimed">Item marked as claimed</string>
+    <string name="delete">លុប</string>
+    <string name="total_posts">Total Posts</string>
+    <string name="empty_items">No items found</string>
+    <string name="error_loading">Unable to load items</string>
+    <string name="error_photo_too_large">Photo is too large for the demo server. Use a smaller image or try again — we compress it automatically.</string>
+    <string name="error_photo_upload_failed">Could not prepare photo for upload. Try another image or submit without a photo.</string>
+    <string name="error_firebase_upload">Photo upload failed. Check Firebase Storage rules and internet, then try again.</string>
+    <string name="error_post_failed">Could not submit post. Please try again.</string>
+    <string name="retry">Retry</string>
+    <string name="reported_by">Reported By</string>
+    <string name="location_found">Location Found</string>
+    <string name="item_meta_format">%1$s • %2$s</string>
+    <string name="item_reported_at">បានរាយការណ៍នៅ: %1$s</string>
+    <string name="category_hint">ប្រភេទ</string>
+    <string name="description_hint">ព័ត៌មានលម្អិត</string>
+    <string name="email_hint">អុីមែល ឬ លេខទូរស័ព្ទ</string>
+    <string name="filter_all">ទាំងអស់</string>
+    <string name="filter_found">ឃើញ</string>
+    <string name="filter_lost">បាត់</string>
+    <string name="item_title_hint">ចំណងជើង</string>
+    <string name="login_button">ចូល</string>
+    <string name="login_title">ចូលប្រើប្រាស់</string>
+    <string name="nav_home">ទំព័រដើម</string>
+    <string name="nav_profile">គណនី</string>
+    <string name="nav_report">រាយការណ៍</string>
+    <string name="password_hint">ពាក្យសម្ងាត់</string>
+    <string name="post_item_title">រាយការណ៍របស់របរ</string>
+    <string name="profile_title">គណនីរបស់ខ្ញុំ</string>
+    <string name="register_link">មិនទាន់មានគណនី? ចុះឈ្មោះនៅទីនេះ</string>
+    <string name="register_title">ចុះឈ្មោះ</string>
+    <string name="submit_button">ដាក់ស្នើ</string>
+    <string name="success_post">Item posted successfully</string>
+    <string name="success_deleted">Item deleted</string>
+    <string name="student_id_label">Student ID: %1$s</string>
+    <string-array name="categories">
+        <item>Electronics</item>
+        <item>Student ID</item>
+        <item>Wallet</item>
+        <item>Keys</item>
+        <item>Clothing &amp; Accessories</item>
+        <item>Books &amp; Stationery</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="filters">
+        <item>All</item>
+        <item>Lost</item>
+        <item>Found</item>
+        <item>Electronics</item>
+        <item>Wallet</item>
+        <item>Student ID</item>
+        <item>Keys</item>
+        <item>Books &amp; Stationery</item>
+        <item>Other</item>
+    </string-array>
 </resources>
