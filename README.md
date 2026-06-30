@@ -83,7 +83,7 @@ You can also register a new account from the login screen.
 ### Run locally
 
 ```bash
-git clone https://github.com/Vitkayo/Campus-Found-Mobile.git
+git clone https://github.com/bundavit/Campus-Found-Mobile.git
 cd Campus-Found-Mobile
 # Copy local.properties.example → local.properties and set sdk.dir
 ./gradlew assembleDebug
