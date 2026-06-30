@@ -6,11 +6,9 @@ This is a **student portfolio / demo release**. It does not include an admin das
 
 ## Screenshots
 
-> Add screenshots to `screenshots/` and embed them here before sharing on your portfolio site.
-
 | Login | Home | Report | Profile |
 | --- | --- | --- | --- |
-| *(add login.png)* | *(add home.png)* | *(add report.png)* | *(add profile.png)* |
+| ![Login screen](screenshots/login.png) | ![Home screen](screenshots/home.png) | ![Report screen](screenshots/report.png) | ![Profile screen](screenshots/profile.png) |
 
 ## Features
 
