@@ -58,13 +58,13 @@ PROJECT_TECHNOLOGY_SUMMARY.txt
 scripts/
 script/
 
-# UI design drafts (not the Android app)
+# UI design drafts (not the Android app — root folders only; do not use UI/ alone)
 stitch_campus_lost_found/
 
 # Dev / setup extras (keep locally — not needed for teacher submission)
 docs/
 postman/
 firebase/
-New UI/
-UI/
+/New UI/
+/UI/
 ui-screenshots/
