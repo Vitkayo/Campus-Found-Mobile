@@ -9,6 +9,7 @@ import com.example.lostfound.model.Item
 import com.example.lostfound.util.ItemSort
 import com.example.lostfound.util.StatusUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: ItemRepository,
@@ -82,7 +84,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun refreshAfterNewPost(createdItem: Item? = null) {
+    fun refreshAfterNewPost() {
         _uiState.update { state ->
             state.copy(
                 selectedFilter = "All",
