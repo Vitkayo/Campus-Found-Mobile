@@ -17,18 +17,3 @@ data class CachedItemRecord(
     val contactInfo: String = "",
     val cachedAt: Long = System.currentTimeMillis()
 )
-
-@Entity(tableName = "recent_items")
-data class RecentItemRecord(
-    @PrimaryKey val id: String,
-    val title: String,
-    val description: String,
-    val category: String,
-    val status: String,
-    val location: String,
-    val imageUrl: String,
-    val reporterName: String,
-    val createdAt: String,
-    val contactInfo: String = "",
-    val viewedAt: Long = System.currentTimeMillis()
-)

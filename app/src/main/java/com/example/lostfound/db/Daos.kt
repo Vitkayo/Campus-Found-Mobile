@@ -21,19 +21,3 @@ interface CachedItemDao {
     @Query("DELETE FROM cached_items")
     fun clearAll()
 }
-
-@Dao
-interface RecentItemDao {
-
-    @Query("SELECT * FROM recent_items ORDER BY viewedAt DESC LIMIT 20")
-    fun getAll(): List<RecentItemRecord>
-
-    @Query("SELECT * FROM recent_items ORDER BY viewedAt DESC LIMIT 20")
-    fun getAllFlow(): Flow<List<RecentItemRecord>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(item: RecentItemRecord)
-
-    @Query("DELETE FROM recent_items WHERE id = :id")
-    fun deleteById(id: String)
-}

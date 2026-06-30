@@ -370,7 +370,7 @@ class PostItemFragment : Fragment() {
                         Snackbar.make(binding.root, R.string.success_post, Snackbar.LENGTH_SHORT).show()
                         viewModel.clearDraft()
                         clearFormUi()
-                        homeViewModel.refreshAfterNewPost(viewModel.takeCreatedItem())
+                        homeViewModel.refreshAfterNewPost()
                         findNavController().navigate(R.id.homeFragment)
                         viewModel.clearSubmitSuccess()
                     }

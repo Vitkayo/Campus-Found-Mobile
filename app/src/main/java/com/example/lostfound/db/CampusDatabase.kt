@@ -6,14 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [CachedItemRecord::class, RecentItemRecord::class],
-    version = 3,
+    entities = [CachedItemRecord::class],
+    version = 4,
     exportSchema = false
 )
 abstract class CampusDatabase : RoomDatabase() {
 
     abstract fun cachedItemDao(): CachedItemDao
-    abstract fun recentItemDao(): RecentItemDao
 
     companion object {
         @Volatile

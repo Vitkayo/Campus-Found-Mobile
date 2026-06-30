@@ -66,43 +66,13 @@ class CampusDatabaseTest {
         assertEquals("Newer", dao.getAll().first().title)
     }
 
-    @Test
-    fun recentItemDao_insertDeleteAndLimit() {
-        val dao = database.recentItemDao()
-
-        repeat(25) { index ->
-            dao.insert(sampleRecentItem(index.toString(), "Item $index").copy(viewedAt = index.toLong()))
-        }
-
-        assertEquals(20, dao.getAll().size)
-        assertEquals("24", dao.getAll().first().id)
-
-        dao.deleteById("24")
-        assertEquals(20, dao.getAll().size)
-        assertTrue(dao.getAll().none { it.id == "24" })
-        assertEquals("23", dao.getAll().first().id)
-    }
-
     private fun sampleCachedItem(id: String, title: String) = CachedItemRecord(
         id = id,
         title = title,
         description = "Test description",
         category = "Electronics",
         status = "lost",
-        location = "Central Library, RUPP",
-        imageUrl = "https://example.com/image.jpg",
-        reporterName = "Test Student",
-        createdAt = "2026-06-29",
-        contactInfo = "+85512345678"
-    )
-
-    private fun sampleRecentItem(id: String, title: String) = RecentItemRecord(
-        id = id,
-        title = title,
-        description = "Test description",
-        category = "Electronics",
-        status = "found",
-        location = "Engineering Building, RUPP",
+        location = "A610, Library",
         imageUrl = "https://example.com/image.jpg",
         reporterName = "Test Student",
         createdAt = "2026-06-29",

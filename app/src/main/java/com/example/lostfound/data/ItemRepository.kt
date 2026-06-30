@@ -2,9 +2,7 @@ package com.example.lostfound.data
 
 import com.example.lostfound.api.ApiService
 import com.example.lostfound.db.CachedItemDao
-import com.example.lostfound.db.RecentItemDao
 import com.example.lostfound.db.CachedItemRecord
-import com.example.lostfound.db.RecentItemRecord
 import com.example.lostfound.model.Item
 import com.example.lostfound.util.ItemSort
 import kotlinx.coroutines.Dispatchers
@@ -17,15 +15,10 @@ import javax.inject.Singleton
 @Singleton
 class ItemRepository @Inject constructor(
     private val apiService: ApiService,
-    private val cachedDao: CachedItemDao,
-    private val recentDao: RecentItemDao
+    private val cachedDao: CachedItemDao
 ) {
 
     val itemsFlow: Flow<List<Item>> = cachedDao.getAllFlow().map { records ->
-        records.map { it.toItem() }
-    }
-
-    val recentItemsFlow: Flow<List<Item>> = recentDao.getAllFlow().map { records ->
         records.map { it.toItem() }
     }
 
@@ -36,7 +29,6 @@ class ItemRepository @Inject constructor(
             cachedDao.clearAll()
             cachedDao.insertAll(sorted.map { it.toCachedRecord() })
         } catch (e: Exception) {
-            // Log error or handle appropriately
             if (cachedDao.getAll().isEmpty()) throw e
         }
     }
@@ -80,10 +72,6 @@ class ItemRepository @Inject constructor(
         deleted
     }
 
-    suspend fun getRecentlyViewed(): List<Item> = withContext(Dispatchers.IO) {
-        recentDao.getAll().map { it.toItem() }
-    }
-
     private fun upsertCachedItem(item: Item) {
         val id = item.id ?: return
         val records = cachedDao.getAll().toMutableList()
@@ -119,33 +107,7 @@ class ItemRepository @Inject constructor(
         contactInfo = contactInfo ?: ""
     )
 
-    private fun Item.toRecentRecord() = RecentItemRecord(
-        id = id ?: "",
-        title = title ?: "",
-        description = description ?: "",
-        category = category ?: "",
-        status = status ?: "",
-        location = location ?: "",
-        imageUrl = imageUrl ?: "",
-        reporterName = reporterName ?: "",
-        createdAt = createdAt ?: date ?: "",
-        contactInfo = contactInfo ?: ""
-    )
-
     private fun CachedItemRecord.toItem() = Item(
-        id = id,
-        title = title,
-        description = description,
-        category = category,
-        status = status,
-        location = location,
-        imageUrl = imageUrl,
-        reporterName = reporterName,
-        createdAt = createdAt,
-        contactInfo = contactInfo
-    )
-
-    private fun RecentItemRecord.toItem() = Item(
         id = id,
         title = title,
         description = description,

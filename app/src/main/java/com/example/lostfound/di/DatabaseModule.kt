@@ -3,7 +3,6 @@ package com.example.lostfound.di
 import android.content.Context
 import com.example.lostfound.db.CampusDatabase
 import com.example.lostfound.db.CachedItemDao
-import com.example.lostfound.db.RecentItemDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,10 +23,5 @@ object DatabaseModule {
     @Provides
     fun provideCachedItemDao(database: CampusDatabase): CachedItemDao {
         return database.cachedItemDao()
-    }
-
-    @Provides
-    fun provideRecentItemDao(database: CampusDatabase): RecentItemDao {
-        return database.recentItemDao()
     }
 }
