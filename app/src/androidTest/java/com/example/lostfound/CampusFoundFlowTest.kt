@@ -178,20 +178,21 @@ class CampusFoundFlowTest {
     }
 
     @Test
-    fun homeScreen_filterChip_canBeSelected() {
+    fun homeScreen_categoryDropdown_canBeSelected() {
         launchLoggedInMain()
         waitForApi()
 
-        onView(withTagValue(hamcrestIs("filter_chip_Electronics"))).perform(click())
-        onView(withTagValue(hamcrestIs("filter_chip_Electronics"))).check(matches(isDisplayed()))
+        onView(withId(R.id.categoryFilterInput)).perform(click())
+        onView(withText("Electronics")).perform(click())
+        onView(withId(R.id.categoryFilterInput)).check(matches(withText("Electronics")))
     }
 
     @Test
-    fun homeScreen_fab_navigatesToReport() {
+    fun homeScreen_bottomNav_navigatesToReport() {
         launchLoggedInMain()
         Thread.sleep(1500)
 
-        onView(withId(R.id.addItemFab)).perform(click())
+        onView(withId(R.id.postItemFragment)).perform(click())
         onView(withId(R.id.titleInput)).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withId(R.id.submitButton)).perform(scrollTo()).check(matches(isDisplayed()))
     }

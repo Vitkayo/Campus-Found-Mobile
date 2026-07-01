@@ -58,6 +58,9 @@ PROJECT_TECHNOLOGY_SUMMARY.txt
 scripts/
 script/
 
+# Demo photos (local only — use tools/push_photos_to_emulator.ps1 for emulator)
+Pic Lost Found/
+
 # UI design drafts (not the Android app — root folders only; do not use UI/ alone)
 stitch_campus_lost_found/
 

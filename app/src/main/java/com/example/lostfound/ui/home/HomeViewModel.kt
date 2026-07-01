@@ -41,7 +41,8 @@ class HomeViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(
                 searchQuery = savedStateHandle["search_query"] ?: "",
-                selectedFilter = savedStateHandle["selected_filter"] ?: "All"
+                selectedStatusFilter = savedStateHandle["selected_status_filter"] ?: "All",
+                selectedCategory = savedStateHandle["selected_category"] ?: ""
             )
         }
 
@@ -49,11 +50,13 @@ class HomeViewModel @Inject constructor(
             combine(
                 repository.itemsFlow,
                 _uiState.map { it.searchQuery }.distinctUntilChanged().debounce(300).onStart { emit(_uiState.value.searchQuery) },
-                _uiState.map { it.selectedFilter }.distinctUntilChanged()
-            ) { items, query, filter ->
+                _uiState.map { it.selectedStatusFilter }.distinctUntilChanged(),
+                _uiState.map { it.selectedCategory }.distinctUntilChanged()
+            ) { items, query, statusFilter, categoryFilter ->
                 ItemSort.newestFirst(
                     items.filter { item ->
-                        StatusUtils.matchesSearch(item, query) && StatusUtils.matchesFilter(item, filter)
+                        StatusUtils.matchesSearch(item, query) &&
+                            StatusUtils.matchesHomeFilters(item, statusFilter, categoryFilter)
                     }
                 )
             }.flowOn(Dispatchers.Default)
@@ -87,11 +90,13 @@ class HomeViewModel @Inject constructor(
     fun refreshAfterNewPost() {
         _uiState.update { state ->
             state.copy(
-                selectedFilter = "All",
+                selectedStatusFilter = "All",
+                selectedCategory = "",
                 searchQuery = ""
             )
         }
-        savedStateHandle["selected_filter"] = "All"
+        savedStateHandle["selected_status_filter"] = "All"
+        savedStateHandle["selected_category"] = ""
         savedStateHandle["search_query"] = ""
         clearScrollState()
         refreshItems()
@@ -102,9 +107,14 @@ class HomeViewModel @Inject constructor(
         savedStateHandle["search_query"] = query
     }
 
-    fun setSelectedFilter(filter: String) {
-        _uiState.update { it.copy(selectedFilter = filter) }
-        savedStateHandle["selected_filter"] = filter
+    fun setSelectedStatusFilter(filter: String) {
+        _uiState.update { it.copy(selectedStatusFilter = filter) }
+        savedStateHandle["selected_status_filter"] = filter
+    }
+
+    fun setSelectedCategory(category: String) {
+        _uiState.update { it.copy(selectedCategory = category) }
+        savedStateHandle["selected_category"] = category
     }
 
     fun saveScrollState(state: Parcelable?) {

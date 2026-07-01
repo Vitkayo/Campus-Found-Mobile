@@ -129,23 +129,91 @@
                     android:textSize="13sp" />
             </LinearLayout>
 
-            <HorizontalScrollView
-                android:id="@+id/filterScrollView"
+            <LinearLayout
+                android:id="@+id/filterRow"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/home_filter_height"
                 android:layout_marginTop="10dp"
-                android:fillViewport="true"
-                android:paddingHorizontal="16dp"
-                android:scrollbars="none">
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/filterChipGroup"
+                <TextView
+                    android:id="@+id/filterAllButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:chipSpacingHorizontal="6dp"
-                    app:selectionRequired="true"
-                    app:singleSelection="true" />
-            </HorizontalScrollView>
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_home_filter_chip"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:minWidth="52dp"
+                    android:paddingHorizontal="12dp"
+                    android:tag="filter_chip_All"
+                    android:text="@string/filter_all"
+                    android:textColor="@color/home_filter_chip_text"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/filterLostButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_home_filter_chip"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:minWidth="52dp"
+                    android:paddingHorizontal="12dp"
+                    android:tag="filter_chip_Lost"
+                    android:text="@string/filter_lost"
+                    android:textColor="@color/home_filter_chip_text"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/filterFoundButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_home_filter_chip"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:minWidth="52dp"
+                    android:paddingHorizontal="12dp"
+                    android:tag="filter_chip_Found"
+                    android:text="@string/filter_found"
+                    android:textColor="@color/home_filter_chip_text"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/categoryFilterInput"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_home_filter_dropdown"
+                    android:clickable="true"
+                    android:contentDescription="@string/category"
+                    android:drawableEnd="@drawable/ic_arrow_drop_down_16"
+                    android:drawablePadding="4dp"
+                    android:dropDownVerticalOffset="4dp"
+                    android:ellipsize="end"
+                    android:focusable="false"
+                    android:gravity="center_vertical"
+                    android:inputType="none"
+                    android:maxLines="1"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="8dp"
+                    android:popupBackground="@color/surface_container_high"
+                    android:singleLine="true"
+                    android:textColor="@color/on_surface_variant"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -197,7 +265,7 @@
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
                     android:paddingHorizontal="16dp"
-                    android:paddingBottom="96dp" />
+                    android:paddingBottom="24dp" />
 
                 <ProgressBar
                     android:id="@+id/loadingProgress"
@@ -252,18 +320,5 @@
             </FrameLayout>
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addItemFab"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="18dp"
-        android:layout_marginBottom="96dp"
-        android:contentDescription="@string/post_item"
-        app:backgroundTint="@color/primary"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.CampusFound.Fab"
-        app:srcCompat="@android:drawable/ic_input_add"
-        app:tint="@color/on_primary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -8,5 +8,6 @@ data class HomeUiState(
     val isRefreshing: Boolean = false,
     val error: String? = null,
     val searchQuery: String = "",
-    val selectedFilter: String = "All"
+    val selectedStatusFilter: String = "All",
+    val selectedCategory: String = ""
 )

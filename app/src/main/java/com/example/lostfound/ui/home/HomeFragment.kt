@@ -7,30 +7,24 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.util.TypedValue
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lostfound.R
 import com.example.lostfound.databinding.FragmentHomeBinding
 import com.example.lostfound.model.Item
-import com.example.lostfound.service.SessionManager
 import com.example.lostfound.ui.detail.ItemDetailActivity
-import com.example.lostfound.ui.login.LoginActivity
 import com.example.lostfound.util.ThemeToggleBinding
-import com.google.android.material.chip.Chip
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -39,12 +33,12 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by activityViewModels()
-    @Inject
-    lateinit var sessionManager: SessionManager
     private lateinit var adapter: ItemAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private val searchHandler = Handler(Looper.getMainLooper())
     private var pendingSearchQuery: Runnable? = null
+    private var categoryDropdownOptions: List<String> = emptyList()
+    private lateinit var statusFilterButtons: List<TextView>
 
     companion object {
         private const val SEARCH_DEBOUNCE_MS = 300L
@@ -64,20 +58,13 @@ class HomeFragment : Fragment() {
         binding.root.requestFocus()
         setupRecyclerView()
         setupSwipeRefresh()
-        setupFilters()
-        setupFilterScroll()
+        setupStatusFilters()
+        setupCategoryDropdown()
         setupSearch()
         observeViewModel()
         ThemeToggleBinding.bind(binding.darkModeButton, requireActivity() as AppCompatActivity)
 
         binding.retryButton.setOnClickListener { viewModel.loadItems() }
-        binding.addItemFab.setOnClickListener {
-            if (sessionManager.isLoggedIn()) {
-                findNavController().navigate(R.id.postItemFragment)
-            } else {
-                showLoginRequiredDialog()
-            }
-        }
     }
 
     override fun onResume() {
@@ -109,90 +96,69 @@ class HomeFragment : Fragment() {
         binding.itemsRecyclerView.itemAnimator?.changeDuration = 0
     }
 
-    private fun setupFilters() {
-        val filters = resources.getStringArray(R.array.filters)
-        val selected = viewModel.uiState.value.selectedFilter
-        binding.filterChipGroup.setOnCheckedStateChangeListener(null)
-        binding.filterChipGroup.removeAllViews()
+    private fun setupStatusFilters() {
+        statusFilterButtons = listOf(
+            binding.filterAllButton,
+            binding.filterLostButton,
+            binding.filterFoundButton,
+        )
 
-        filters.forEach { filter ->
-            val chip = Chip(requireContext()).apply {
-                id = View.generateViewId()
-                text = filter
-                isCheckable = true
-                isChecked = filter == selected
-                tag = "filter_chip_$filter"
-                minHeight = dp(32)
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                chipCornerRadius = dp(16).toFloat()
-                chipStartPadding = dp(12).toFloat()
-                chipEndPadding = dp(12).toFloat()
-                textStartPadding = 0f
-                textEndPadding = 0f
-                checkedIcon = null
-                isCheckedIconVisible = false
-            }
-            binding.filterChipGroup.addView(chip)
-        }
-
-        binding.filterChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
-            if (checkedIds.isEmpty()) {
-                syncChipSelection(viewModel.uiState.value.selectedFilter)
-                return@setOnCheckedStateChangeListener
-            }
-            val chipId = checkedIds.first()
-            val chip = group.findViewById<Chip>(chipId) ?: return@setOnCheckedStateChangeListener
-            val filter = chip.text.toString()
-            if (filter != viewModel.uiState.value.selectedFilter) {
-                viewModel.setSelectedFilter(filter)
-            }
-        }
-
-        updateChipStyles(selected)
-    }
-
-    private fun syncChipSelection(filter: String) {
-        for (i in 0 until binding.filterChipGroup.childCount) {
-            val chip = binding.filterChipGroup.getChildAt(i) as Chip
-            if (chip.text.toString() == filter) {
-                if (binding.filterChipGroup.checkedChipId != chip.id) {
-                    binding.filterChipGroup.check(chip.id)
-                }
-                updateChipStyles(filter)
-                return
-            }
-        }
-    }
-
-    private fun setupFilterScroll() {
-        binding.filterScrollView.setOnTouchListener { view, event ->
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN ->
-                    view.parent?.requestDisallowInterceptTouchEvent(true)
-
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    view.parent?.requestDisallowInterceptTouchEvent(false)
-                    if (event.actionMasked == MotionEvent.ACTION_UP) {
-                        view.performClick()
-                    }
+        statusFilterButtons.forEach { button ->
+            button.setOnClickListener {
+                val filter = button.text.toString()
+                if (filter != viewModel.uiState.value.selectedStatusFilter) {
+                    viewModel.setSelectedStatusFilter(filter)
                 }
             }
-            false
+        }
+
+        updateStatusFilterStyles(viewModel.uiState.value.selectedStatusFilter)
+    }
+
+    private fun setupCategoryDropdown() {
+        categoryDropdownOptions = buildList {
+            add(getString(R.string.home_category_filter_all))
+            addAll(resources.getStringArray(R.array.categories))
+        }
+
+        val dropdownAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_list_item_1,
+            categoryDropdownOptions
+        )
+        binding.categoryFilterInput.setAdapter(dropdownAdapter)
+        binding.categoryFilterInput.setOnClickListener {
+            binding.categoryFilterInput.showDropDown()
+        }
+        binding.categoryFilterInput.setOnItemClickListener { _, _, position, _ ->
+            val category = if (position == 0) "" else categoryDropdownOptions[position]
+            if (category != viewModel.uiState.value.selectedCategory) {
+                viewModel.setSelectedCategory(category)
+            }
+        }
+
+        syncCategoryDropdown(viewModel.uiState.value.selectedCategory)
+    }
+
+    private fun syncStatusFilterSelection(filter: String) {
+        updateStatusFilterStyles(filter)
+    }
+
+    private fun syncCategoryDropdown(category: String) {
+        val display = if (category.isBlank()) {
+            getString(R.string.home_category_filter_all)
+        } else {
+            category
+        }
+        if (binding.categoryFilterInput.text?.toString() != display) {
+            binding.categoryFilterInput.setText(display, false)
         }
     }
 
-    private fun updateChipStyles(selectedFilter: String) {
-        for (i in 0 until binding.filterChipGroup.childCount) {
-            val chip = binding.filterChipGroup.getChildAt(i) as Chip
-            val selected = chip.text.toString() == selectedFilter
-            chip.setChipBackgroundColorResource(
-                if (selected) R.color.primary else R.color.surface_container_high,
-            )
-            val textColor = ContextCompat.getColor(
-                requireContext(),
-                if (selected) R.color.on_primary else R.color.on_surface_variant
-            )
-            chip.setTextColor(textColor)
+    private fun updateStatusFilterStyles(selectedFilter: String) {
+        statusFilterButtons.forEach { button ->
+            val selected = button.text.toString() == selectedFilter
+            button.isSelected = selected
         }
     }
 
@@ -232,7 +198,8 @@ class HomeFragment : Fragment() {
                 binding.errorMessageText.text = state.error
 
                 updateHomeCounts(state)
-                syncChipSelection(state.selectedFilter)
+                syncStatusFilterSelection(state.selectedStatusFilter)
+                syncCategoryDropdown(state.selectedCategory)
 
                 val currentSearch = binding.searchInput.text?.toString().orEmpty()
                 if (currentSearch != state.searchQuery) {
@@ -250,20 +217,6 @@ class HomeFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun showLoginRequiredDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.login_required_title)
-            .setMessage(R.string.login_required_message)
-            .setPositiveButton(R.string.login) { _, _ ->
-                startActivity(
-                    Intent(requireContext(), LoginActivity::class.java)
-                        .putExtra(LoginActivity.EXTRA_SHOW_LOGIN, true)
-                )
-            }
-            .setNegativeButton(R.string.continue_browsing, null)
-            .show()
-    }
-
     private fun updateHomeCounts(state: HomeUiState) {
         val lost = state.items.count { it.status.equals("lost", ignoreCase = true) }
         val found = state.items.count { it.status.equals("found", ignoreCase = true) }
@@ -272,13 +225,6 @@ class HomeFragment : Fragment() {
         binding.totalCountText.text = getString(R.string.home_total_count, state.items.size)
         binding.resultsCountText.text = getString(R.string.home_results_count, state.items.size)
     }
-
-    private fun dp(value: Int): Int =
-        TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            value.toFloat(),
-            resources.displayMetrics
-        ).toInt()
 
     override fun onDestroyView() {
         searchHandler.removeCallbacksAndMessages(null)

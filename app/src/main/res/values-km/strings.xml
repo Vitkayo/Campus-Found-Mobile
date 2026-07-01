@@ -9,6 +9,7 @@
     <string name="home_found_count">%1$d Found</string>
     <string name="home_total_count">%1$d Total</string>
     <string name="home_results_count">%1$d results</string>
+    <string name="home_category_filter_all">All categories</string>
     <string name="section_item_photo">Item Photo</string>
     <string name="section_item_details">Item Details</string>
     <string name="section_location">Location</string>
@@ -163,6 +164,11 @@
         <item>Books &amp; Stationery</item>
         <item>Ticket</item>
         <item>Other</item>
+    </string-array>
+    <string-array name="home_status_filters">
+        <item>All</item>
+        <item>Lost</item>
+        <item>Found</item>
     </string-array>
     <string-array name="filters">
         <item>All</item>

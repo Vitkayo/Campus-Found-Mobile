@@ -31,12 +31,24 @@ object StatusUtils {
         badgeView.setTextColor(ContextCompat.getColor(context, textColor))
     }
 
-    fun matchesFilter(item: com.example.lostfound.model.Item, filter: String): Boolean {
-        if (filter == "All") return true
-
-        return when (filter) {
+    fun matchesHomeFilters(
+        item: com.example.lostfound.model.Item,
+        statusFilter: String,
+        categoryFilter: String
+    ): Boolean {
+        val statusOk = when (statusFilter) {
+            "All" -> true
             "Lost" -> item.status.equals("lost", ignoreCase = true)
             "Found" -> item.status.equals("found", ignoreCase = true)
+            else -> true
+        }
+        if (!statusOk) return false
+        if (categoryFilter.isBlank()) return true
+        return matchesCategoryFilter(item, categoryFilter)
+    }
+
+    private fun matchesCategoryFilter(item: com.example.lostfound.model.Item, filter: String): Boolean {
+        return when (filter) {
             "Electronics" -> matchesCategory(item.category, listOf("electronics", "phone", "laptop"))
             "Wallet" -> matchesCategory(item.category, listOf("wallet", "personal", "keys & wallets"))
             "Card ID" -> matchesCategory(
@@ -47,6 +59,16 @@ object StatusUtils {
             "Ticket" -> matchesCategory(item.category, listOf("ticket", "tickets", "event ticket"))
             else -> item.category?.contains(filter, ignoreCase = true) == true ||
                 item.title?.contains(filter, ignoreCase = true) == true
+        }
+    }
+
+    fun matchesFilter(item: com.example.lostfound.model.Item, filter: String): Boolean {
+        if (filter == "All") return true
+
+        return when (filter) {
+            "Lost" -> item.status.equals("lost", ignoreCase = true)
+            "Found" -> item.status.equals("found", ignoreCase = true)
+            else -> matchesCategoryFilter(item, filter)
         }
     }
 
