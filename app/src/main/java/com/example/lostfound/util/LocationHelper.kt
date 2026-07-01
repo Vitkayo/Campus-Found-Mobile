@@ -9,6 +9,10 @@ import java.util.Locale
 
 object LocationHelper {
 
+    const val DEFAULT_CAMPUS_LAT = 11.4729
+    const val DEFAULT_CAMPUS_LNG = 104.8937
+
+    private val COORD_REGEX = Regex("""(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)""")
     @SuppressLint("MissingPermission")
     fun fetchCurrentLocation(
         context: Context,
@@ -57,19 +61,10 @@ object LocationHelper {
                 1
             )
             val line = addresses?.firstOrNull()?.getAddressLine(0)
-            if (!line.isNullOrBlank()) line else formatCoordinates(location)
+            if (!line.isNullOrBlank()) line else formatCoordinates(location.latitude, location.longitude)
         } catch (_: Exception) {
-            formatCoordinates(location)
+            formatCoordinates(location.latitude, location.longitude)
         }
-    }
-
-    private fun formatCoordinates(location: Location): String {
-        return String.format(
-            Locale.getDefault(),
-            "%.5f, %.5f",
-            location.latitude,
-            location.longitude
-        )
     }
 
     fun formatDisplayLocation(location: String?): String {
@@ -80,5 +75,33 @@ object LocationHelper {
             .replace(Regex("^RUPP\\s+", RegexOption.IGNORE_CASE), "")
             .replace(Regex("\\s+RUPP$", RegexOption.IGNORE_CASE), "")
             .trim()
+    }
+
+    fun parseCoordinates(location: String): Pair<Double, Double>? {
+        val match = COORD_REGEX.find(location.trim()) ?: return null
+        val lat = match.groupValues[1].toDoubleOrNull() ?: return null
+        val lng = match.groupValues[2].toDoubleOrNull() ?: return null
+        return lat to lng
+    }
+
+    fun formatMapSelection(context: Context, lat: Double, lng: Double): String {
+        val label = reverseGeocodeLine(context, lat, lng)
+        val coords = formatCoordinates(lat, lng)
+        return if (label.isNotBlank()) "$label ($coords)" else coords
+    }
+
+    fun reverseGeocodeLine(context: Context, lat: Double, lng: Double): String {
+        if (!Geocoder.isPresent()) return ""
+        return try {
+            @Suppress("DEPRECATION")
+            val addresses = Geocoder(context, Locale.getDefault()).getFromLocation(lat, lng, 1)
+            addresses?.firstOrNull()?.getAddressLine(0).orEmpty()
+        } catch (_: Exception) {
+            ""
+        }
+    }
+
+    private fun formatCoordinates(lat: Double, lng: Double): String {
+        return String.format(Locale.getDefault(), "%.5f, %.5f", lat, lng)
     }
 }

@@ -44,6 +44,11 @@
             android:exported="false"
             android:parentActivityName=".ui.main.MainActivity" />
 
+        <activity
+            android:name=".ui.map.MapPickerActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

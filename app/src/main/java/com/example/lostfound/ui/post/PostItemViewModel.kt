@@ -101,7 +101,7 @@ class PostItemViewModel @Inject constructor(
         contactValue: String,
         dateValue: String,
         statusValue: String,
-        imagePathOrUri: String
+        imagePathsOrJoined: String
     ) {
         if (titleValue.isBlank() || categoryValue.isBlank()) {
             _uiState.update { it.copy(error = "Title and Category are required") }
@@ -111,7 +111,7 @@ class PostItemViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true, error = null) }
             try {
-                val imageUrl = imageUploadService.uploadForApi(imagePathOrUri)
+                val imageUrl = imageUploadService.uploadMultiple(imagePathsOrJoined)
                 val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
                 val newItem = Item(
                     title = titleValue.trim(),

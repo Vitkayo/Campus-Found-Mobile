@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.lostfound.BuildConfig
 import com.example.lostfound.R
 import com.example.lostfound.util.ImageStorageUtil
+import com.example.lostfound.util.ImageUrls
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,6 +21,17 @@ class ItemImageUploadService @Inject constructor(
 ) {
 
     private val firebaseStorage by lazy { FirebaseStorageService(appContext) }
+
+    suspend fun uploadMultiple(localPathsOrJoined: String): String {
+        val paths = ImageUrls.split(localPathsOrJoined)
+        if (paths.isEmpty()) return ""
+
+        val uploaded = mutableListOf<String>()
+        for (path in paths) {
+            uploaded.add(uploadForApi(path))
+        }
+        return ImageUrls.join(uploaded)
+    }
 
     suspend fun uploadForApi(localPathOrUri: String): String {
         if (localPathOrUri.isBlank()) return ""

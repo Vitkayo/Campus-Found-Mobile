@@ -54,12 +54,16 @@ object ImageStorageUtil {
         }
     }
 
-    fun pathFromDraftValue(value: String): String? {
-        if (value.isBlank()) return null
-        if (value.startsWith("content://") || value.startsWith("file://") || File(value).exists()) {
-            return value
+    fun pathFromDraftValue(value: String): String? = pathsFromDraftValue(value).firstOrNull()
+
+    fun pathsFromDraftValue(value: String): List<String> {
+        return ImageUrls.split(value).filter { path ->
+            path.isNotBlank() && (
+                path.startsWith("content://") ||
+                    path.startsWith("file://") ||
+                    File(path).exists()
+                )
         }
-        return null
     }
 
     fun isReadableLocalImage(context: Context, localPathOrUri: String): Boolean {

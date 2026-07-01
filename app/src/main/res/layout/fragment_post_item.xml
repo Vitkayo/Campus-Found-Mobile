@@ -164,6 +164,16 @@
                         android:textSize="10sp"
                         android:textStyle="bold" />
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/photoList"
+                        android:layout_width="match_parent"
+                        android:layout_height="96dp"
+                        android:layout_marginBottom="10dp"
+                        android:clipToPadding="false"
+                        android:overScrollMode="never"
+                        android:paddingEnd="4dp"
+                        android:visibility="gone" />
+
                     <FrameLayout
                         android:id="@+id/uploadArea"
                         android:layout_width="match_parent"
@@ -219,7 +229,7 @@
                             android:layout_height="40dp"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
-                            android:text="@string/choose_photo"
+                            android:text="@string/choose_photos"
                             android:textSize="12sp" />
 
                         <com.google.android.material.button.MaterialButton
@@ -362,16 +372,36 @@
                             android:textSize="13sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/useLocationButton"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="42dp"
-                        android:text="@string/use_my_location"
-                        android:textColor="@color/status_found_text"
-                        android:textSize="13sp"
-                        app:cornerRadius="8dp"
-                        app:strokeColor="@color/accent_location" />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/useLocationButton"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1"
+                            android:text="@string/use_my_location"
+                            android:textColor="@color/status_found_text"
+                            android:textSize="12sp"
+                            app:cornerRadius="8dp"
+                            app:strokeColor="@color/accent_location" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/pickMapButton"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="@string/pick_on_map"
+                            android:textColor="@color/primary"
+                            android:textSize="12sp"
+                            app:cornerRadius="8dp"
+                            app:strokeColor="@color/primary" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 

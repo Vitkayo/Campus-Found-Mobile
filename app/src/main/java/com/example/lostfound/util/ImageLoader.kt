@@ -13,11 +13,11 @@ object ImageLoader {
     private const val LIST_THUMB_PX = 192
 
     fun load(imageView: ImageView, url: String?) {
-        loadInternal(imageView, url, maxSizePx = null)
+        loadInternal(imageView, ImageUrls.primary(url), maxSizePx = null)
     }
 
     fun loadThumbnail(imageView: ImageView, url: String?) {
-        loadInternal(imageView, url, maxSizePx = LIST_THUMB_PX)
+        loadInternal(imageView, ImageUrls.primary(url), maxSizePx = LIST_THUMB_PX)
     }
 
     private fun loadInternal(imageView: ImageView, url: String?, maxSizePx: Int?) {

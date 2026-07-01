@@ -74,6 +74,16 @@
                     android:src="@drawable/placeholder_item" />
             </FrameLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailPhotoGallery"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:background="@color/surface_container_low"
+                android:clipToPadding="false"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

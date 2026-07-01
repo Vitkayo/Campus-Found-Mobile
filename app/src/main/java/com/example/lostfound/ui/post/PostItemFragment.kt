@@ -1,42 +1,46 @@
 package com.example.lostfound.ui.post
 
 import android.Manifest
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import androidx.core.content.ContextCompat
-import androidx.core.view.doOnLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.lostfound.ui.home.HomeViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lostfound.R
 import com.example.lostfound.databinding.FragmentPostItemBinding
 import com.example.lostfound.service.SessionManager
-import com.example.lostfound.util.ImageLoader
+import com.example.lostfound.ui.home.HomeViewModel
+import com.example.lostfound.ui.map.MapPickerActivity
 import com.example.lostfound.util.ImageStorageUtil
+import com.example.lostfound.util.ImageUrls
 import com.example.lostfound.util.LocationHelper
 import com.example.lostfound.util.ThemeToggleBinding
-import android.net.Uri
-import androidx.core.content.FileProvider
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PostItemFragment : Fragment() {
@@ -47,16 +51,29 @@ class PostItemFragment : Fragment() {
     private val viewModel: PostItemViewModel by viewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var sessionManager: SessionManager
-    private var savedImagePath: String? = null
+    private lateinit var photoAdapter: PostPhotoAdapter
+    private val savedImagePaths = mutableListOf<String>()
     private var isLostSelected = true
     private var cameraPhotoUri: Uri? = null
     private var lastShownSubmitError: String? = null
 
     private val imagePicker = registerForActivityResult(
-        ActivityResultContracts.GetContent(),
-    ) { uri ->
-        if (uri != null) {
-            onImageUriSelected(uri)
+        ActivityResultContracts.GetMultipleContents(),
+    ) { uris ->
+        if (uris.isNotEmpty()) {
+            addImagesFromUris(uris)
+        }
+    }
+
+    private val mapPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val location = result.data?.getStringExtra(MapPickerActivity.EXTRA_SELECTED_LOCATION)
+            if (!location.isNullOrBlank()) {
+                binding.locationInput.setText(location)
+                saveDraftFromForm()
+            }
         }
     }
 
@@ -102,12 +119,23 @@ class PostItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sessionManager = SessionManager(requireContext())
+        setupPhotoList()
         setupCategoryDropdown()
         setupStatusSelector()
         restoreDraft()
         setupListeners()
         observeViewModel()
         ThemeToggleBinding.bind(binding.darkModeButton, requireActivity() as AppCompatActivity)
+    }
+
+    private fun setupPhotoList() {
+        photoAdapter = PostPhotoAdapter { path -> removePhoto(path) }
+        binding.photoList.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        binding.photoList.adapter = photoAdapter
     }
 
     private fun setupCategoryDropdown() {
@@ -196,31 +224,91 @@ class PostItemFragment : Fragment() {
         isLostSelected = state.status != "found"
         updateStatusSelection(isLostSelected, animate = false)
 
-        val image = state.imageUrl
-        ImageStorageUtil.pathFromDraftValue(image)?.let { path ->
-            savedImagePath = path
-            showImagePreview(path)
+        savedImagePaths.clear()
+        savedImagePaths.addAll(ImageStorageUtil.pathsFromDraftValue(state.imageUrl))
+        refreshPhotoUi()
+    }
+
+    private fun refreshPhotoUi() {
+        if (savedImagePaths.isEmpty()) {
+            binding.photoList.visibility = View.GONE
+            binding.uploadArea.visibility = View.VISIBLE
+            binding.previewImage.visibility = View.GONE
+            binding.uploadPlaceholder.visibility = View.VISIBLE
+        } else {
+            binding.photoList.visibility = View.VISIBLE
+            binding.uploadArea.visibility = View.GONE
+            photoAdapter.submitList(savedImagePaths.toList())
         }
     }
 
-    private fun showImagePreview(path: String) {
-        binding.previewImage.visibility = View.VISIBLE
-        binding.uploadPlaceholder.visibility = View.GONE
-        ImageLoader.load(binding.previewImage, path)
+    private fun removePhoto(path: String) {
+        savedImagePaths.remove(path)
+        refreshPhotoUi()
+        saveDraftFromForm()
+    }
+
+    private fun launchImagePicker() {
+        if (savedImagePaths.size >= ImageUrls.MAX_PHOTOS) {
+            Snackbar.make(
+                binding.root,
+                getString(R.string.photo_limit_reached, ImageUrls.MAX_PHOTOS),
+                Snackbar.LENGTH_SHORT
+            ).show()
+            return
+        }
+        imagePicker.launch("image/*")
+    }
+
+    private fun addImagesFromUris(uris: List<Uri>) {
+        val remaining = ImageUrls.MAX_PHOTOS - savedImagePaths.size
+        if (remaining <= 0) {
+            Snackbar.make(
+                binding.root,
+                getString(R.string.photo_limit_reached, ImageUrls.MAX_PHOTOS),
+                Snackbar.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        var added = 0
+        for (uri in uris.take(remaining)) {
+            val path = ImageStorageUtil.persistImage(requireContext(), uri) ?: continue
+            if (path in savedImagePaths) continue
+            savedImagePaths.add(path)
+            added++
+        }
+
+        if (added == 0) {
+            Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_SHORT).show()
+            return
+        }
+
+        if (uris.size > remaining) {
+            Snackbar.make(
+                binding.root,
+                getString(R.string.photo_limit_reached, ImageUrls.MAX_PHOTOS),
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
+
+        refreshPhotoUi()
+        saveDraftFromForm()
     }
 
     private fun setupListeners() {
-        binding.uploadArea.setOnClickListener { imagePicker.launch("image/*") }
-        binding.choosePhotoButton.setOnClickListener { imagePicker.launch("image/*") }
+        binding.uploadArea.setOnClickListener { launchImagePicker() }
+        binding.choosePhotoButton.setOnClickListener { launchImagePicker() }
         binding.takePhotoButton.setOnClickListener { onTakePhotoClicked() }
         binding.dateInput.setOnClickListener { showDatePicker() }
         binding.useLocationButton.setOnClickListener { onUseLocationClicked() }
+        binding.pickMapButton.setOnClickListener { launchMapPicker() }
 
         binding.submitButton.setOnClickListener {
             val status = if (isLostSelected) "lost" else "found"
-            val imagePath = savedImagePath?.takeIf { path ->
+            val imagePaths = savedImagePaths.filter { path ->
                 ImageStorageUtil.isReadableLocalImage(requireContext(), path)
-            }.orEmpty()
+            }
             viewModel.submitItem(
                 titleValue = binding.titleInput.text?.toString().orEmpty(),
                 categoryValue = binding.categoryInput.text?.toString().orEmpty(),
@@ -229,23 +317,35 @@ class PostItemFragment : Fragment() {
                 contactValue = binding.contactInput.text?.toString().orEmpty(),
                 dateValue = binding.dateInput.text?.toString().orEmpty(),
                 statusValue = status,
-                imagePathOrUri = imagePath
+                imagePathsOrJoined = ImageUrls.join(imagePaths)
             )
         }
     }
 
-    private fun onImageUriSelected(uri: Uri) {
-        val path = ImageStorageUtil.persistImage(requireContext(), uri)
-        if (path == null) {
-            Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_SHORT).show()
-            return
+    private fun launchMapPicker() {
+        val intent = Intent(requireContext(), MapPickerActivity::class.java).apply {
+            putExtra(
+                MapPickerActivity.EXTRA_INITIAL_LOCATION,
+                binding.locationInput.text?.toString().orEmpty()
+            )
         }
-        savedImagePath = path
-        showImagePreview(path)
-        saveDraftFromForm()
+        mapPickerLauncher.launch(intent)
+    }
+
+    private fun onImageUriSelected(uri: Uri) {
+        addImagesFromUris(listOf(uri))
     }
 
     private fun onTakePhotoClicked() {
+        if (savedImagePaths.size >= ImageUrls.MAX_PHOTOS) {
+            Snackbar.make(
+                binding.root,
+                getString(R.string.photo_limit_reached, ImageUrls.MAX_PHOTOS),
+                Snackbar.LENGTH_SHORT
+            ).show()
+            return
+        }
+
         val granted = ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.CAMERA
@@ -333,7 +433,7 @@ class PostItemFragment : Fragment() {
             contactValue = binding.contactInput.text?.toString().orEmpty(),
             dateValue = binding.dateInput.text?.toString().orEmpty(),
             statusValue = status,
-            imageUrlValue = savedImagePath.orEmpty()
+            imageUrlValue = ImageUrls.join(savedImagePaths)
         )
     }
 
@@ -388,7 +488,10 @@ class PostItemFragment : Fragment() {
         binding.dateInput.text = null
         binding.previewImage.visibility = View.GONE
         binding.uploadPlaceholder.visibility = View.VISIBLE
-        savedImagePath = null
+        binding.photoList.visibility = View.GONE
+        binding.uploadArea.visibility = View.VISIBLE
+        savedImagePaths.clear()
+        photoAdapter.submitList(emptyList())
         isLostSelected = true
         updateStatusSelection(isLost = true, animate = false)
     }

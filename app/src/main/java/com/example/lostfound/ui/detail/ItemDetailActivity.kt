@@ -8,11 +8,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lostfound.R
 import com.example.lostfound.databinding.ActivityItemDetailBinding
 import com.example.lostfound.util.ContactLinkHelper
 import com.example.lostfound.util.DateUtils
 import com.example.lostfound.util.ImageLoader
+import com.example.lostfound.util.ImageUrls
 import com.example.lostfound.util.LocationHelper
 import com.example.lostfound.util.MapHelper
 import com.example.lostfound.util.StatusUtils
@@ -28,6 +30,7 @@ class ItemDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityItemDetailBinding
     private val viewModel: ItemDetailViewModel by viewModels()
+    private var detailPhotoAdapter: DetailPhotoAdapter? = null
 
     @Inject
     lateinit var sessionManager: SessionManager
@@ -95,7 +98,7 @@ class ItemDetailActivity : AppCompatActivity() {
                     binding.detailDate.text = DateUtils.formatDetailDate(item.createdAt ?: item.date)
                     binding.detailTime.text = DateUtils.formatDetailTime(item.createdAt ?: item.date)
                     StatusUtils.applyStatusBadge(this@ItemDetailActivity, item.status, binding.detailStatusBadge)
-                    ImageLoader.load(binding.detailImage, item.imageUrl)
+                    bindPhotos(item.imageUrl)
 
                     val isOwner = sessionManager.ownsItem(item.reporterName)
                     val canClaim = isOwner && !item.status.equals("claimed", ignoreCase = true)
@@ -105,6 +108,31 @@ class ItemDetailActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun bindPhotos(imageValue: String?) {
+        val photos = ImageUrls.split(imageValue)
+        val primary = photos.firstOrNull()
+        ImageLoader.load(binding.detailImage, primary)
+
+        if (photos.size > 1) {
+            binding.detailPhotoGallery.visibility = View.VISIBLE
+            if (detailPhotoAdapter == null) {
+                detailPhotoAdapter = DetailPhotoAdapter { url ->
+                    ImageLoader.load(binding.detailImage, url)
+                }
+                binding.detailPhotoGallery.layoutManager = LinearLayoutManager(
+                    this,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+                binding.detailPhotoGallery.adapter = detailPhotoAdapter
+            }
+            detailPhotoAdapter?.submitList(photos)
+        } else {
+            binding.detailPhotoGallery.visibility = View.GONE
+            detailPhotoAdapter?.submitList(emptyList())
         }
     }
 

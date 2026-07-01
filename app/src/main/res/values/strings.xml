@@ -73,7 +73,8 @@
     <string name="lost">Lost</string>
     <string name="found">Found</string>
     <string name="upload_image">Upload Image</string>
-    <string name="upload_hint">JPEG or PNG · use gallery or camera below</string>
+    <string name="upload_hint">Add up to 5 photos · JPEG or PNG</string>
+    <string name="choose_photos">Choose photos</string>
     <string name="choose_photo">Choose photo</string>
     <string name="take_photo">Take photo</string>
     <string name="camera_permission_needed">Camera permission is needed to take a photo</string>
@@ -83,6 +84,12 @@
     <string name="location">Location</string>
     <string name="location_example">A610, Library</string>
     <string name="use_my_location">Use my location</string>
+    <string name="pick_on_map">Pick on map</string>
+    <string name="confirm_location">Use this location</string>
+    <string name="map_picker_hint">Tap the map to drop a pin where the item was last seen.</string>
+    <string name="map_picker_tap_prompt">Tap the map to select a location</string>
+    <string name="selected_location">Selected location</string>
+    <string name="photo_limit_reached">You can add up to %1$d photos</string>
     <string name="contact_info">Contact</string>
     <string name="contact_hint">IG, Facebook, Telegram, or phone number</string>
     <string name="location_not_set">Location not specified.</string>

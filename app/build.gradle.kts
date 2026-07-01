@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.lifecycle.livedata)
 
     implementation(libs.glide)
+    implementation(libs.osmdroid)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.storage)
