@@ -1,0 +1,20 @@
+﻿*.kt linguist-detectable=true
+*.kts linguist-language=Kotlin
+*.gradle linguist-detectable=false
+*.gradle.kts linguist-detectable=false
+build.gradle.kts linguist-detectable=false
+settings.gradle.kts linguist-detectable=false
+app/build.gradle.kts linguist-detectable=false
+
+*.xml linguist-detectable=false
+*.png linguist-detectable=false
+*.webp linguist-detectable=false
+*.md linguist-detectable=false
+*.py linguist-detectable=false
+*.ps1 linguist-detectable=false
+*.jar linguist-vendored
+*.toml linguist-detectable=false
+*.properties linguist-detectable=false
+*.pro linguist-detectable=false
+*.bat linguist-generated=true
+gradlew linguist-generated=true
