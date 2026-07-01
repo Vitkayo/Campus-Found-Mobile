@@ -153,11 +153,12 @@
     <string name="student_id_label">Student ID: %1$s</string>
     <string-array name="categories">
         <item>Electronics</item>
-        <item>Student ID</item>
+        <item>Card ID</item>
         <item>Wallet</item>
         <item>Keys</item>
         <item>Clothing &amp; Accessories</item>
         <item>Books &amp; Stationery</item>
+        <item>Ticket</item>
         <item>Other</item>
     </string-array>
     <string-array name="filters">
@@ -166,8 +167,9 @@
         <item>Found</item>
         <item>Electronics</item>
         <item>Wallet</item>
-        <item>Student ID</item>
+        <item>Card ID</item>
         <item>Keys</item>
+        <item>Ticket</item>
         <item>Books &amp; Stationery</item>
         <item>Other</item>
     </string-array>

@@ -39,11 +39,12 @@ object StatusUtils {
             "Found" -> item.status.equals("found", ignoreCase = true)
             "Electronics" -> matchesCategory(item.category, listOf("electronics", "phone", "laptop"))
             "Wallet" -> matchesCategory(item.category, listOf("wallet", "personal", "keys & wallets"))
-            "Student ID" -> matchesCategory(
+            "Card ID" -> matchesCategory(
                 item.category,
-                listOf("id card", "id cards", "student id", "student id card")
+                listOf("card id", "id card", "student id", "parking card", "national id")
             )
             "Keys" -> matchesCategory(item.category, listOf("keys", "key", "keys & wallets"))
+            "Ticket" -> matchesCategory(item.category, listOf("ticket", "tickets", "event ticket"))
             else -> item.category?.contains(filter, ignoreCase = true) == true ||
                 item.title?.contains(filter, ignoreCase = true) == true
         }
